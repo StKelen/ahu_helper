@@ -1,0 +1,26 @@
+{
+  "pages": [
+    "pages/index/main"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#FFE100",
+    "navigationBarTitleText": "安大充值帮",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#555555",
+    "selectedColor": "#E9B200",
+    "list": [{
+      "pagePath": "pages/index/main",
+      "text": "功能列表",
+      "iconPath": "static/images/menu.png",
+      "selectedIconPath": "static/images/menu-sel.png"
+    },{
+      "pagePath": "pages/index/main",
+      "text": "个人中心",
+      "iconPath": "static/images/person.png",
+      "selectedIconPath": "static/images/person-sel.png"
+    }]
+  }
+}
