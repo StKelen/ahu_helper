@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/person/main",
     "pages/index/main"
   ],
   "window": {
@@ -17,7 +18,7 @@
       "iconPath": "static/images/menu.png",
       "selectedIconPath": "static/images/menu-sel.png"
     },{
-      "pagePath": "pages/index/main",
+      "pagePath": "pages/person/main",
       "text": "个人中心",
       "iconPath": "static/images/person.png",
       "selectedIconPath": "static/images/person-sel.png"
