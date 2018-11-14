@@ -1,36 +1,36 @@
 <template>
     <div>
         <li>
-            <card v-for="(item, index) in cardLists" :key="index" :imageUrl="item.imgUrl" :name="item.name"></card>
+            <card v-for="(item, index) in cardList" :key="index" :imageUrl="item.url" :name="item.title"></card>
         </li>
     </div>
 </template>
 
 <script>
 import Card from '@/components/Card.vue'
+import {get} from '@/util'
+import config from '@/config'
 export default {
     components: {
         Card
     },
     data () {
         return {
-            cardLists: [{
-                imgUrl: '../../static/images/card.png',
-                name: '校园卡充值'
-            }, {
-                imgUrl: '../../static/images/light.png',
-                name: '照明缴费'
-            }, {
-                imgUrl: '../../static/images/net.png',
-                name: '上网缴费'
-            }, {
-                imgUrl: '../../static/images/conditioner.png',
-                name: '空调缴费'
-            }, {
-                imgUrl: '../../static/images/speech.png',
-                name: '讲座信息'
-            }]
+            cardList: []
         }
+    },
+    methods: {
+        async getList () {
+            const listData = await get('/weapp/index_list')
+            listData.list.map(item => {
+                item.url = `${config.host}/index_images/${item.url}`
+            })
+            this.cardList = listData.list
+            console.log(this.cardList)
+        }
+    },
+    mounted () {
+        this.getList()
     }
 }
 </script>
