@@ -1,15 +1,17 @@
 <template>
     <div>
         <img id="avatar" :src="userInfo.avatarUrl" alt="头像">
-        <label>
-            <input type="text" id="study-number">
-        </label>
-        <label for="password">
-            <input type="password">
-        </label>
-        <label for="serial-number">
-            <input type="text">
-        </label>
+        <div class="input-area">
+            <input type="text" id="study-number" placeholder="学号">
+        </div>
+        <div class="input-area">
+            <input type="text" password=true id="password" placeholder="校园卡查询密码">
+        </div>
+        <div class="input-area">
+            <input type="text" id="serial-number" placeholder="验证码">
+            <img src="/static/code.png" alt="验证码">
+        </div>
+        <div id="test"></div>
     </div>
 </template>
 
@@ -47,30 +49,53 @@ export default {
     height: 200rpx;
     margin: 150rpx auto;
 }
-label {
-    display: block;
+.input-area {
+    height: 80rpx;
     width: 80%;
-    height: 80rpx;
     margin: 50rpx auto;
-    background-color: #fff;
-    box-shadow: 0rpx 0rpx 15rpx rgba(204, 180, 0, 0.6) inset;
-    border-radius: 40rpx;
 }
-input{
-    display: inline-block;
-    height: 80rpx;
-    width: 70%;
-    font-size: 30rpx;
+input {
+    height: 100%;
+    padding-left: 120rpx;
+    padding-right: 40rpx;
+    font-size: 40rpx;
     font-weight: light;
     color: #888;
+    background-color: #FFF;
+    background-size: 60rpx 60rpx;
+    background-repeat: no-repeat;
+    background-position: 30rpx center;
+    box-shadow: 0rpx 0rpx 15rpx #DFDFDF inset;
+    border-radius: 40rpx;
 }
-label:before {
+#study-number {
+    background-image:  url('../../../static/images/card.png');
+}
+#password {
+    background-image:  url('../../../static/images/password.png');
+}
+#serial-number {
+    background-image:  url('../../../static/images/password.png');
+    display: inline-block;
+    width: 28%;
+}
+.input-area img {
+    float: right;
+    width: 210rpx;
+    height: 80rpx;
+}
+/* input::before {
     display: inline-block;
     width: 60rpx;
     height: 60rpx;
-    margin: auto 20rpx 10rpx 40rpx;
-    background: url('../../../static/images/card.png') no-repeat left center;
-    background-size: 100% 100%;
+    margin: 10rpx 0 10rpx -70rpx;
     content: '';
 }
+#study-number::before {
+    background-size: 100% 100%;
+}
+#password::before {
+    background: url('../../../static/images/password.png') no-repeat left center;
+    background-size: 100% 100%;
+} */
 </style>
