@@ -2,42 +2,81 @@
     <div>
         <img id="avatar" :src="userInfo.avatarUrl" alt="头像">
         <div class="input-area">
-            <input type="text" id="study-number" placeholder="学号">
+            <input type="text" id="study-number" placeholder="学号" @input="getStudyNumber">
         </div>
         <div class="input-area">
-            <input type="text" password=true id="password" placeholder="校园卡查询密码">
+            <input type="text" password=true id="password" placeholder="校园卡查询密码"  @input="getPassword">
         </div>
         <div class="input-area">
-            <input type="text" id="serial-number" placeholder="验证码">
-            <img src="/static/code.png" alt="验证码">
+            <input type="text" id="serial-number" placeholder="验证码"  @input="getSerialNumber">
+            <img :src="checkCodeUrl" alt="验证码">
         </div>
-        <div id="test"></div>
+        <button open-type="getUserInfo" lang="zh_CN" @getuserinfo="onGotUserInfo">登录</button>
     </div>
 </template>
 
 <script>
 import config from '@/config'
-import qcloud from 'wafer2-client-sdk'
+import {get} from '@/utils/util'
+import login from '@/utils/login'
 export default {
     data () {
         return {
             userInfo: {
                 avatarUrl: `${config.personUrl}avatar.png`
-            }
+            },
+            checkCodeUrl: '',
+            cookie: '',
+            studyNumber: '',
+            password: '',
+            serialNumber: ''
         }
     },
     methods: {
-        login () {
-            qcloud.setLoginUrl(config.loginUrl)
-            qcloud.login({
+        // login () {
+        //     qcloud.setLoginUrl(config.loginUrl)
+        //     qcloud.login({
+        //         success: (userInfo) => {
+        //             console.log('登录成功', userInfo)
+        //         },
+        //         fail: (err) => {
+        //             console.log('登录失败', err)
+        //         }
+        //     })
+        // },
+        async getPicAndCookie () {
+            const data = await get('/weapp/get_check_code')
+            this.checkCodeUrl = 'data:image/png;base64,' + data.PictureAndCookie.image
+            this.cookie = data.PictureAndCookie.cookie
+        },
+        onGotUserInfo () {
+            console.log(this.studyNumber)
+            login.setLoginUrl(config.loginUrl)
+            login.login({
                 success: (userInfo) => {
-                    console.log('登录成功', userInfo)
+                    console.log(userInfo)
                 },
                 fail: (err) => {
                     console.log('登录失败', err)
-                }
+                },
+                studyNumber: this.studyNumber,
+                password: this.password,
+                serialNumber: this.serialNumber,
+                cookie: this.cookie
             })
+        },
+        getStudyNumber (e) {
+            this.studyNumber = e.mp.detail.value
+        },
+        getPassword (e) {
+            this.password = e.mp.detail.value
+        },
+        getSerialNumber (e) {
+            this.serialNumber = e.mp.detail.value
         }
+    },
+    mounted () {
+        this.getPicAndCookie()
     }
 }
 </script>
@@ -75,7 +114,7 @@ input {
     background-image:  url('../../../static/images/password.png');
 }
 #serial-number {
-    background-image:  url('../../../static/images/password.png');
+    background-image:  url('../../../static/images/checkcode.png');
     display: inline-block;
     width: 28%;
 }
@@ -84,18 +123,12 @@ input {
     width: 210rpx;
     height: 80rpx;
 }
-/* input::before {
-    display: inline-block;
-    width: 60rpx;
-    height: 60rpx;
-    margin: 10rpx 0 10rpx -70rpx;
-    content: '';
+button {
+    width: 70%;
+    height: 80rpx;
+    background-color: rgb(255, 201, 0);
+    color: #FFF;
+    font-weight: bold;
+    border-radius: 20rpx;
 }
-#study-number::before {
-    background-size: 100% 100%;
-}
-#password::before {
-    background: url('../../../static/images/password.png') no-repeat left center;
-    background-size: 100% 100%;
-} */
 </style>

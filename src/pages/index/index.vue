@@ -8,7 +8,7 @@
 
 <script>
 import Card from '@/components/Card.vue'
-import {get} from '@/util'
+import {get} from '@/utils/util'
 import config from '@/config'
 export default {
     components: {
@@ -26,7 +26,6 @@ export default {
                 item.url = `${config.host}/index_images/${item.url}`
             })
             this.cardList = listData.list
-            console.log(this.cardList)
         }
     },
     mounted () {

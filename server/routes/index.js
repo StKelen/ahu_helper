@@ -9,10 +9,11 @@ const controllers = require('../controllers')
 // 从 sdk 中取出中间件
 // 这里展示如何使用 Koa 中间件完成登录态的颁发与验证
 const { auth: { authorizationMiddleware, validationMiddleware } } = require('../qcloud')
+const hallLogin = require('../middlewares/login')
 
 // --- 登录与授权 Demo --- //
 // 登录接口
-router.get('/login', authorizationMiddleware, controllers.login)
+router.get('/login', hallLogin, authorizationMiddleware, controllers.login)
 // 用户信息接口（可以用来验证登录态）
 router.get('/user', validationMiddleware, controllers.user)
 
@@ -33,5 +34,6 @@ router.get('/message', controllers.message.get)
 router.post('/message', controllers.message.post)
 
 router.get('/index_list', controllers.indexList)
+router.get('/get_check_code', controllers.getCheckCode)
 
 module.exports = router

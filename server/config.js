@@ -49,7 +49,11 @@ const CONF = {
     qcloudAppId: '1257923247',
     qcloudSecretId: 'AKIDOaXFhuWYy83i8IzsIXXNwPinhLjrmTv7',
     qcloudSecretKey: '6xYtyoOimfJkwyrW1ILAk5B3h5DD3f8L',
-    networkTimeout: 30000
+    networkTimeout: 30000,
+
+    // 安徽大学服务中心相关配置
+    // 网站首页
+    hallUrl: 'http://101.76.160.144/'
 }
 
 module.exports = CONF
