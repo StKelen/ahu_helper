@@ -1,7 +1,8 @@
 {
   "pages": [
-    "pages/person/main",
-    "pages/index/main"
+    "pages/payment/main",
+    "pages/index/main",
+    "pages/person/main"
   ],
   "window": {
     "backgroundTextStyle": "light",

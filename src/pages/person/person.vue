@@ -1,17 +1,19 @@
 <template>
     <div>
         <img id="avatar" :src="userInfo.avatarUrl" alt="头像">
-        <div class="input-area">
-            <input type="text" id="study-number" placeholder="学号" @input="getStudyNumber">
+        <div v-if="!userInfo.openId">
+            <div class="input-area">
+                <input type="text" id="study-number" placeholder="学号" @input="getStudyNumber">
+            </div>
+            <div class="input-area">
+                <input type="text" password=true id="password" placeholder="校园卡查询密码"  @input="getPassword">
+            </div>
+            <div class="input-area">
+                <input type="text" id="serial-number" placeholder="验证码"  @input="getSerialNumber">
+                <img :src="checkCodeUrl" alt="验证码">
+            </div>
+            <button open-type="getUserInfo" lang="zh_CN" @getuserinfo="onLogin">登录</button>
         </div>
-        <div class="input-area">
-            <input type="text" password=true id="password" placeholder="校园卡查询密码"  @input="getPassword">
-        </div>
-        <div class="input-area">
-            <input type="text" id="serial-number" placeholder="验证码"  @input="getSerialNumber">
-            <img :src="checkCodeUrl" alt="验证码">
-        </div>
-        <button open-type="getUserInfo" lang="zh_CN" @getuserinfo="onGotUserInfo">登录</button>
     </div>
 </template>
 
@@ -33,28 +35,18 @@ export default {
         }
     },
     methods: {
-        // login () {
-        //     qcloud.setLoginUrl(config.loginUrl)
-        //     qcloud.login({
-        //         success: (userInfo) => {
-        //             console.log('登录成功', userInfo)
-        //         },
-        //         fail: (err) => {
-        //             console.log('登录失败', err)
-        //         }
-        //     })
-        // },
         async getPicAndCookie () {
             const data = await get('/weapp/get_check_code')
             this.checkCodeUrl = 'data:image/png;base64,' + data.PictureAndCookie.image
             this.cookie = data.PictureAndCookie.cookie
         },
-        onGotUserInfo () {
-            console.log(this.studyNumber)
+        onLogin () {
             login.setLoginUrl(config.loginUrl)
             login.login({
                 success: (userInfo) => {
-                    console.log(userInfo)
+                    console.log(this.userInfo)
+                    this.userInfo = userInfo
+                    wx.setStorageSync('userInfo', userInfo)
                 },
                 fail: (err) => {
                     console.log('登录失败', err)
@@ -64,6 +56,12 @@ export default {
                 serialNumber: this.serialNumber,
                 cookie: this.cookie
             })
+        },
+        getUserInfo () {
+            const userInfo = wx.getStorageSync('userInfo')
+            if (userInfo.openId) {
+                this.userInfo = userInfo
+            }
         },
         getStudyNumber (e) {
             this.studyNumber = e.mp.detail.value
@@ -75,8 +73,13 @@ export default {
             this.serialNumber = e.mp.detail.value
         }
     },
+    onLoad () {
+        this.getUserInfo()
+    },
     mounted () {
-        this.getPicAndCookie()
+        if (!this.userInfo.openId) {
+            this.getPicAndCookie()
+        }
     }
 }
 </script>
@@ -87,6 +90,7 @@ export default {
     width: 200rpx;
     height: 200rpx;
     margin: 150rpx auto;
+    border-radius: 100rpx;
 }
 .input-area {
     height: 80rpx;

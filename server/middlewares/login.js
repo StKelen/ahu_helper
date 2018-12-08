@@ -1,18 +1,15 @@
 const agent = require('superagent')
 const config = require('../config')
+const {mysql} = require('../qcloud')
 
 module.exports = async (ctx, next) => {
-    const bufferPwd = Buffer.from(ctx.headers['password'])
-    const password = bufferPwd.toString('base64')
+    const password = Buffer.from(ctx.headers['password']).toString('base64')
     const headers = {
         Cookie: ctx.headers['cookie'],
-        'Connection': 'keep-alive',
-        'X-Requested-With': 'XMLHttpRequest',
-        Accept: 'application/json, text/javascript, */*; q=0.01',
-        'Referer': 'http://101.76.160.144/',
-        'Origin': 'http://101.76.160.144'
+        Connection: 'keep-alive',
+        Referer: 'http://101.76.160.144/'
     }
-    var loginData = {
+    const loginData = {
         sno: ctx.headers['study-number'],
         pwd: password,
         ValiCode: ctx.headers['serial-number'],
@@ -21,13 +18,25 @@ module.exports = async (ctx, next) => {
         json: true
     }
     const returnData = await sendLoginRequsetPromise(headers, loginData)
-    console.log(returnData.body)
+    if (JSON.parse(returnData.text).IsSucceed) {
+        let sessionId = headers.Cookie.replace(/ASP.NET_SessionId=/, '')
+        let hallTicket = (returnData.headers['set-cookie'][0]).replace(/; path=\/; HttpOnly/, '')
+        headers.Cookie += `; ${hallTicket}`
+        await next()
+        const openId = ctx.state.$wxInfo.userinfo.userinfo.openId
+        hallTicket = hallTicket.replace(/hallticket=/, '')
+        await updateUserInfo(openId, sessionId, hallTicket, loginData.sno)
+    }
 }
 
-function sendLoginRequsetPromise (headers, loginData) {
+function sendLoginRequsetPromise (baseHeaders, loginData) {
+    const loginHeaders = Object.assign({}, baseHeaders, {
+        'X-Requested-With': 'XMLHttpRequest',
+        'Origin': 'http://101.76.160.144'
+    })
     return new Promise((resolve, reject) => {
         agent.post(config.hallUrl + 'Login/LoginBySnoQuery')
-        .set(headers)
+        .set(loginHeaders)
         .type('form')
         .send(loginData)
         .withCredentials()
@@ -35,5 +44,24 @@ function sendLoginRequsetPromise (headers, loginData) {
             if (err) reject(err)
             resolve(result)
         })
+    })
+}
+
+function realLoginPromise (headers) {
+    return new Promise((resolve, reject) => {
+        agent.get(config.hallUrl + 'User/User')
+        .set(headers)
+        .end((err, res) => {
+            if (err) reject(err)
+            resolve(res)
+        })
+    })
+}
+
+async function updateUserInfo (openId, sessionId, hallTicket, studyNumber) {
+    await mysql('cSessionInfo').where('open_id', '=', openId).update({
+        'session_id': sessionId,
+        'hallticket': hallTicket,
+        'study_number': studyNumber
     })
 }

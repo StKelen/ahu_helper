@@ -1,0 +1,253 @@
+<template>
+    <div>
+        <div id="header">
+            <div id="wrap-out">
+                <div id="img-wrap-in">
+                    <img id="header-image" :src="imageUrl">
+                </div>
+                 <p>{{title}}</p>
+            </div>
+        </div>
+        <div id="transprancy"></div>
+        <scroll-view style="height: 70vh; z-index: 0; margin-top: 30vh;" scroll-y="true">
+            <div style="height: 60vh; padding-top: 10vh;">
+            <div class="title">充值金额<span>（单位：元）</span></div>
+            <div class="content">
+                <price-option v-for="item in priceList"
+                @select="onSelect"
+                :key="item.index"
+                :index=item.index
+                :price=item.price
+                :checked=item.checked 
+                :custom=item.custom></price-option>
+            </div>
+            <div class="title">充值目标</div>
+            <div class="select-main">
+                <span class="select-info">充值目标</span>
+                <span class="select-content">请选择</span>
+            </div>
+            <modal :visible="targetVisible" title="充值对象"></modal>
+            <div class="title">支付方式</div>
+            <div class="select-main">
+                <span class="select-info">支付方式</span>
+                <span class="select-content">请选择</span>
+            </div>
+            <button>充值!</button>
+            </div>
+        </scroll-view>
+    </div>
+</template>
+
+<script>
+import PriceOption from '@/components/PriceOption.vue'
+import Modal from '@/components/Modal.vue'
+export default {
+    components: {
+        PriceOption,
+        Modal
+    },
+    data () {
+        return {
+            id: '',
+            imageUrl: '',
+            title: '',
+            priceList: [
+                {
+                    index: 1,
+                    price: 10,
+                    checked: false,
+                    custom: false
+                }, {
+                    index: 2,
+                    price: 20,
+                    checked: false,
+                    custom: false
+                }, {
+                    index: 3,
+                    price: 50,
+                    checked: false,
+                    custom: false
+                }, {
+                    index: 4,
+                    price: 100,
+                    checked: false,
+                    custom: false
+                }, {
+                    index: 5,
+                    price: 150,
+                    checked: false,
+                    custom: false
+                }, {
+                    index: 6,
+                    price: 200,
+                    checked: false,
+                    custom: false
+                }, {
+                    index: 7,
+                    price: 500,
+                    checked: false,
+                    custom: false
+                }, {
+                    index: 8,
+                    price: '',
+                    checked: false,
+                    custom: true
+                }
+            ],
+            targetVisible: false
+        }
+    },
+    mounted () {
+        this.id = this.$root.$mp.query.id
+        this.imageUrl = this.$root.$mp.query.imageUrl
+        this.title = this.$root.$mp.query.title
+    },
+    methods: {
+        onSelect (index, price) {
+            console.log(index, price)
+            this.priceList.map((item, i) => {
+                item.checked = index === (i + 1) && (item.custom ? item.custom : !item.checked)
+                return item
+            })
+        }
+    }
+}
+</script>
+
+<style scoped>
+#header{
+    width: 100%;
+    height: 40vh;
+    background-image: linear-gradient( 180deg, #FFE100 20%, #FFB200); /*#FFE980 FFA933*/
+    border-radius: 0 0 10vh 10vh;
+    position: fixed;
+    top: 0;
+    z-index: 2;
+}
+#wrap-out{
+    position: relative;
+    height: 0;
+    width: 50%;
+    margin: auto;
+    padding-bottom: 50%;
+    top: 5vh;
+}
+#img-wrap-in{
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    box-sizing: border-box;
+}
+#header-image{
+    display: block;
+    height: 60%;
+    width: 100%;
+}
+#header p{
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 5%;
+    text-align: center;
+    font-size: 48rpx;
+    color: #444;
+}
+#header p::before,p::after{
+    display: inline-block;
+    content: '';
+    width: 100rpx;
+    height: 5rpx;
+    margin-bottom: 14rpx;
+    background-color: #444;
+}
+#header p::before{
+margin-left: -150rpx;
+margin-right: 30rpx;
+}
+#header p::after{
+margin-right: -150rpx;
+margin-left: 30rpx;
+}
+
+#transprancy{
+    position: fixed;
+    height: 14vh;
+    width: 100vw;
+    top: 30vh;
+    background-image: linear-gradient( 180deg, rgba(244, 247, 252, 1) 40%, rgba(244, 247, 252, 0.75) 80%, rgba(244, 247, 252, 0) 100%);
+    z-index: 1;
+    /* 244 247 252 */
+}
+
+.title{
+    padding: 10rpx 20rpx;
+    margin-top: 20rpx;
+    font-size: 40rpx;
+    background-color: #FFF;
+    z-index: 0;
+}
+.title span{
+    font-size: 24rpx;
+    padding-left: 20rpx;
+}
+.content{
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    z-index: 0;
+}
+.select-main{
+    margin-bottom: -20rpx;
+    height: 100rpx;
+}
+.select-info{
+    display: inline-block;
+    font-size: 36rpx;
+    width: 150rpx;
+    height: 60rpx;
+    line-height: 60rpx;
+    margin: 20rpx;
+    color: #777;
+}
+.select-content{
+    display: inline-block;
+    position: relative;
+    width: 300rpx;
+    font-size: 32rpx;
+    line-height: 60rpx;
+    padding-left: 50rpx;
+    margin: 10rpx;
+    color: #666;
+    background-color: #FFF;
+    border: 3rpx solid #FFB200;
+    border-radius: 3rpx;
+}
+.select-content::after{
+    display: block;
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    right: -1rpx;
+    bottom: -1rpx;
+    border-width: 30rpx 30rpx 0 0;
+    border-style: solid;
+    border-color:transparent #FFB200;
+}
+button{
+    width: 550rpx;
+    height: 100rpx;
+    margin: 50rpx auto;
+    border-radius: 50rpx;
+    font-size: 50rpx;
+    line-height: 100rpx;
+    background-image: linear-gradient( 135deg, #FFC500 5%, #FFB200);
+    color: #3C3C3C;
+}
+button::after{
+    border: 0;
+}
+</style>
+

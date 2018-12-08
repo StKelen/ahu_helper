@@ -1,15 +1,17 @@
 <template>
     <ul>
-        <div id="decoration">
-            <img :src="imageUrl" alt="装饰图片">
-        </div>
-        <div id="description">{{name}}</div>
+        <a :href="url">
+            <div id="decoration">
+                <img :src="imageUrl" alt="装饰图片">
+            </div>
+            <div id="description">{{name}}</div>
+        </a>
     </ul>
 </template>
 
 <script>
 export default {
-    props: ['name', 'imageUrl']
+    props: ['name', 'imageUrl', 'url']
 }
 </script>
 

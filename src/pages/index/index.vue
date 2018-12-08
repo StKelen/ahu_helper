@@ -1,7 +1,7 @@
 <template>
     <div>
         <li>
-            <card v-for="(item, index) in cardList" :key="index" :imageUrl="item.url" :name="item.title"></card>
+            <card v-for="(item, index) in cardList" :key="index" :imageUrl="item.url" :name="item.title" :url="payUrl(item.id, item.url, item.title)"></card>
         </li>
     </div>
 </template>
@@ -26,6 +26,9 @@ export default {
                 item.url = `${config.host}/index_images/${item.url}`
             })
             this.cardList = listData.list
+        },
+        payUrl (id, imageUrl, title) {
+            return '/pages/payment/main?id=' + id + '&imageUrl=' + imageUrl + '&title=' + title
         }
     },
     mounted () {
