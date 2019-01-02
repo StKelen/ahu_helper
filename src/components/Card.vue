@@ -1,12 +1,10 @@
 <template>
-    <ul>
-        <a :href="url">
-            <div id="decoration">
-                <img :src="imageUrl" alt="装饰图片">
-            </div>
-            <div id="description">{{name}}</div>
-        </a>
-    </ul>
+    <a :href="url">
+        <div class="decoration">
+            <img :src="imageUrl" alt="装饰图片">
+        </div>
+        <div id="description">{{name}}</div>
+    </a>
 </template>
 
 <script>
@@ -16,39 +14,37 @@ export default {
 </script>
 
 <style scoped>
-ul {
+a {
   display: inline-block;
-  position: relative;
   width: 300rpx;
   height: 250rpx;
   margin: 50rpx 0rpx 0rpx 50rpx;
-  border-radius: 15rpx;
-  /* border: 1rpx #CACACA solid; */
+  border-radius: 30rpx;
   background-color: #FFFFFF;
-  box-shadow: 0 10rpx 15rpx 0 rgba(0, 0, 0, 0.15),
-    0 0 30rpx 0 rgba(225, 225, 225, 0.1);
+  box-shadow: 0 0 40rpx 30rpx rgba(225, 225, 225, 0.2), 0 20rpx 40rpx 0rpx rgba(0, 0, 0, 0.15);
 }
-div#decoration {
-  height: 180rpx;
+div.decoration {
+  height: 150rpx;
   border-radius: 15rpx 15rpx 0 0;
-  border-bottom: 0.5rpx #D5D5D5 solid;
-  /* background-image: linear-gradient(45deg, #4481eb 0%, #04aeee 100%); */
 }
-div#decoration img {
-  position: relative;
+div.decoration img {
+  position: fixed;
   display: block;
-  width: 200rpx;
-  height: 120rpx;
-  left: 50rpx;
-  top: 30rpx;
+  width: 150rpx;
+  height: 90rpx;
+  margin: 25rpx 0 0 25rpx;
   opacity: 0.8;
 }
 div#description {
-  height: 70rpx;
+  height: 80rpx;
+  width: 220rpx;
+  margin: 5rpx auto;
   font-size: 32rpx;
+  line-height: 80rpx; 
   font-weight: 400;
-  color: #555;
   text-align: center;
-  padding-top: 18rpx; 
+  color: #555;
+  background-color: rgba(250, 220, 200, 0.2);
+  border-radius: 15rpx;
 }
 </style>
