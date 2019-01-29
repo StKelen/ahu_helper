@@ -19,18 +19,17 @@ module.exports = async (ctx, next) => {
     }
     const returnData = await sendLoginRequsetPromise(headers, loginData)
     if (JSON.parse(returnData.text).IsSucceed) {
-        let sessionId = headers.Cookie.replace(/ASP.NET_SessionId=/, '')
         let hallTicket = (returnData.headers['set-cookie'][0]).replace(/; path=\/; HttpOnly/, '')
-        headers.Cookie += `; ${hallTicket}`
+        let cookies = headers.Cookie + '; ' + hallTicket
         await next()
         const openId = ctx.state.$wxInfo.userinfo.userinfo.openId
         hallTicket = hallTicket.replace(/hallticket=/, '')
-        await updateUserInfo(openId, sessionId, hallTicket, loginData.sno)
+        await updateUserInfo(openId, cookies)
     }
 }
 
-function sendLoginRequsetPromise (baseHeaders, loginData) {
-    const loginHeaders = Object.assign({}, baseHeaders, {
+function sendLoginRequsetPromise (headers, loginData) {
+    const loginHeaders = Object.assign({}, headers, {
         'X-Requested-With': 'XMLHttpRequest',
         'Origin': 'http://101.76.160.144'
     })
@@ -58,10 +57,8 @@ function realLoginPromise (headers) {
     })
 }
 
-async function updateUserInfo (openId, sessionId, hallTicket, studyNumber) {
+async function updateUserInfo (openId, cookies) {
     await mysql('cSessionInfo').where('open_id', '=', openId).update({
-        'session_id': sessionId,
-        'hallticket': hallTicket,
-        'study_number': studyNumber
+        cookies
     })
 }

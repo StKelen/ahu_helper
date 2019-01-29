@@ -27,7 +27,7 @@ export default {
     },
     data () {
         return {
-            backgroundColor: '#E6E6E6',
+            backgroundColor: '#FDF9E1', // '#E6E6E6',
             checkedBackgroundColor: '#FFFFFF',
             borderColor: 'transparent',
             checkedBorderColor: '#FFB200',
@@ -69,9 +69,9 @@ export default {
     display: flex;
     position: relative;
     flex-direction: column;
-    width: 160rpx;
+    width: 150rpx;
     height: 72rpx;
-    margin: 20rpx 10rpx;
+    margin: 10rpx 10rpx;
     border-width: 3rpx;
     border-radius: 6rpx;
     border-style: solid;
