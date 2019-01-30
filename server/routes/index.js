@@ -35,6 +35,8 @@ router.post('/message', controllers.message.post)
 
 router.get('/index_list', controllers.indexList)
 router.get('/get_check_code', controllers.getCheckCode)
-router.get('/get_payment_info', controllers.getPaymentInfo)
+router.get('/get_card_info', controllers.getCardInfo)
+router.post('/card_payment', controllers.cardPayment)
+router.get('/get_room_info', controllers.getRoomInfo)
 
 module.exports = router

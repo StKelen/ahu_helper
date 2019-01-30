@@ -35,21 +35,31 @@
                     <div class="title">充值目标</div>
                     <div>
                         <span class="select-info">充值目标</span>
-                        <span class="select-content">请选择</span>
+                        <span
+                            class="select-content"
+                            @click="modalChoose('充值目标',cardInfo.payTarget,'name',targetChooseResult)"
+                        >{{payTargetString}}</span>
                     </div>
                 </div>
-                <modal
-                    :visible="targetVisible"
-                    title="充值对象"
-                ></modal>
                 <div class="card">
                     <div class="title">支付方式</div>
                     <div>
                         <span class="select-info">支付方式</span>
-                        <span class="select-content">请选择</span>
+                        <span
+                            class="select-content"
+                            @click="modalChoose('支付方式', cardInfo.payMethods, 'content', methodChooseResult)"
+                        >{{payMethodString}}</span>
                     </div>
                 </div>
-                <button>充值!</button>
+                <button @click="cardPayment">充值!</button>
+                <modal
+                    :visible="modalVisible"
+                    :title="modalTitle"
+                    :showKey="modalShowKey"
+                    :list="modalList"
+                    @toogleVisible="toogleVisible"
+                    @resultMethod="resultMethod"
+                ></modal>
             </div>
         </scroll-view>
     </div>
@@ -58,7 +68,7 @@
 <script>
 import PriceOption from '@/components/PriceOption.vue'
 import Modal from '@/components/Modal.vue'
-import {get} from '@/utils/util'
+import { get, post } from '@/utils/util'
 export default {
     components: {
         PriceOption,
@@ -119,28 +129,66 @@ export default {
                     custom: true
                 }
             ],
-            targetVisible: false
+            modalVisible: false,
+            modalTitle: '',
+            modalShowKey: '',
+            modalList: [],
+            resultMethod: function () {},
+            cardInfo: {},
+            paymentInfo: {},
+            payMethodString: '请选择',
+            payTargetString: '请选择'
         }
     },
     mounted () {
         this.id = this.$root.$mp.query.id
         this.imageUrl = this.$root.$mp.query.imageUrl
         this.title = this.$root.$mp.query.title
-        this.getPaymentInfo()
+        this.getCardInfo()
     },
     methods: {
-        async getPaymentInfo () {
+        async getCardInfo () {
             const openId = wx.getStorageSync('userInfo').openId
-            await get('/weapp/get_payment_info' + `?open_id=${openId}&id=${this.id}`)
+            this.cardInfo = await get(
+                '/weapp/get_card_info' + `?open_id=${openId}&id=${this.id}`
+            )
+            console.log(this.cardInfo)
         },
         onSelect (index, price) {
-            console.log(index, price)
+            this.paymentInfo.tranamt = parseFloat(price) * 100
             this.priceList.map((item, i) => {
                 item.checked =
                     index === i + 1 &&
                     (item.custom ? item.custom : !item.checked)
                 return item
             })
+        },
+        modalChoose (title, list, showKey, resultMethod) {
+            this.modalTitle = title
+            this.modalList = list
+            this.resultMethod = resultMethod
+            this.modalShowKey = showKey
+            this.modalVisible = true
+        },
+        toogleVisible () {
+            this.modalVisible = !this.modalVisible
+        },
+        targetChooseResult (index) {
+            this.paymentInfo.acctype = this.cardInfo.payTarget[index].acctype
+            this.paymentInfo.account = this.cardInfo.payTarget[0].account
+            this.payTargetString = this.cardInfo.payTarget[index].name
+            this.toogleVisible()
+        },
+        methodChooseResult (index) {
+            // 注意这里是对象，要获取值，用value
+            this.paymentInfo.paymethod = this.cardInfo.payMethods[index].value
+            this.payMethodString = this.paymentInfo.paytype
+            this.toogleVisible()
+        },
+        async cardPayment () {
+            this.paymentInfo.cookies = this.cardInfo.cookies
+            const dd = await post('/weapp/card_payment', this.paymentInfo)
+            console.log(dd)
         }
     }
 }

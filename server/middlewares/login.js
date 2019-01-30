@@ -23,7 +23,6 @@ module.exports = async (ctx, next) => {
         let cookies = headers.Cookie + '; ' + hallTicket
         await next()
         const openId = ctx.state.$wxInfo.userinfo.userinfo.openId
-        hallTicket = hallTicket.replace(/hallticket=/, '')
         await updateUserInfo(openId, cookies)
     }
 }

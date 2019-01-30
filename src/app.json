@@ -2,7 +2,8 @@
   "pages": [
     "pages/index/main",
     "pages/person/main",
-    "pages/payment/main"
+    "pages/cardPayment/main",
+    "pages/elecPayment/main"
   ],
   "window": {
     "backgroundTextStyle": "light",
