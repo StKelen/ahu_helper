@@ -3,7 +3,8 @@
     "pages/index/main",
     "pages/person/main",
     "pages/cardPayment/main",
-    "pages/elecPayment/main"
+    "pages/elecPayment/main",
+    "pages/netPayment/main"
   ],
   "window": {
     "backgroundTextStyle": "light",

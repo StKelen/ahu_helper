@@ -37,12 +37,12 @@
                         <span class="select-info">楼栋</span>
                         <span
                             class="select-content"
-                            @click="modalChoose('充值目标',cardInfo.payTarget,'name',targetChooseResult)"
-                        >{{payTargetString}}</span>
+                            @click="modalChoose('楼　栋', roomInfo.buildingsList, 'building', buildingChooseResult)"
+                        >{{targetBuildingString}}</span>
                     </div>
                     <div>
                         <span class="select-info">房间号</span>
-                        <input class="input-content" type="text">
+                        <input class="input-content" type="text" @input="getRoomId">
                     </div>
                 </div>
                 <div class="card">
@@ -51,11 +51,11 @@
                         <span class="select-info">支付方式</span>
                         <span
                             class="select-content"
-                            @click="modalChoose('支付方式', cardInfo.payMethods, 'content', methodChooseResult)"
+                            @click="modalChoose('支付方式', roomInfo.payList, 'name', methodChooseResult)"
                         >{{payMethodString}}</span>
                     </div>
                 </div>
-                <button @click="cardPayment">充值!</button>
+                <button @click="roomPayment">充值!</button>
                 <modal
                     :visible="modalVisible"
                     :title="modalTitle"
@@ -134,32 +134,31 @@ export default {
                 }
             ],
             modalVisible: false,
+            modalList: [],
             modalTitle: '',
             modalShowKey: '',
-            modalList: [],
             resultMethod: function () {},
-            cardInfo: {},
+            roomInfo: {},
             paymentInfo: {},
             payMethodString: '请选择',
-            payTargetString: '请选择'
+            targetBuildingString: '请选择'
         }
     },
     mounted () {
         this.id = this.$root.$mp.query.id
         this.imageUrl = this.$root.$mp.query.imageUrl
         this.title = this.$root.$mp.query.title
-        this.getCardInfo()
+        this.getRoomInfo()
     },
     methods: {
-        async getCardInfo () {
+        async getRoomInfo () {
             const openId = wx.getStorageSync('userInfo').openId
-            this.cardInfo = await get(
+            this.roomInfo = await get(
                 '/weapp/get_room_info' + `?open_id=${openId}&id=${this.id}`
             )
-            console.log(this.cardInfo)
         },
         onSelect (index, price) {
-            this.paymentInfo.tranamt = parseFloat(price) * 100
+            this.paymentInfo.tran = parseFloat(price) * 100
             this.priceList.map((item, i) => {
                 item.checked =
                     index === i + 1 &&
@@ -177,22 +176,33 @@ export default {
         toogleVisible () {
             this.modalVisible = !this.modalVisible
         },
-        targetChooseResult (index) {
-            this.paymentInfo.acctype = this.cardInfo.payTarget[index].acctype
-            this.paymentInfo.account = this.cardInfo.payTarget[0].account
-            this.payTargetString = this.cardInfo.payTarget[index].name
+        buildingChooseResult (index) {
+            this.paymentInfo.buildingid = this.roomInfo.buildingsList[index].buildingid
+            this.paymentInfo.building = this.roomInfo.buildingsList[index].building
+            this.targetBuildingString = this.paymentInfo.building
             this.toogleVisible()
         },
         methodChooseResult (index) {
             // 注意这里是对象，要获取值，用value
-            this.paymentInfo.paymethod = this.cardInfo.payMethods[index].value
-            this.payMethodString = this.paymentInfo.paytype
+            this.paymentInfo.paytype = this.roomInfo.payList[index].paytype
+            this.payMethodString = this.roomInfo.payList[index].name
+            if (this.paymentInfo.paytype === '3') this.paymentInfo.acctype = '000'
             this.toogleVisible()
         },
-        async cardPayment () {
-            this.paymentInfo.cookies = this.cardInfo.cookies
-            const dd = await post('/weapp/card_payment', this.paymentInfo)
-            console.log(dd)
+        getRoomId (e) {
+            const roomId = parseInt(e.mp.detail.value)
+            this.paymentInfo.roomid = roomId
+            this.paymentInfo.room = roomId
+        },
+        async roomPayment () {
+            this.paymentInfo.cookies = this.roomInfo.cookies
+            this.paymentInfo['payment_acc'] = ''
+            this.paymentInfo.aid = this.roomInfo.aid
+            this.paymentInfo.account = this.roomInfo.studentAccount
+            this.paymentInfo.floorid = ''
+            this.paymentInfo.floor = ''
+            console.log(this.paymentInfo)
+            await post('/weapp/room_payment', this.paymentInfo)
         }
     }
 }

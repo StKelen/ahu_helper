@@ -24,6 +24,8 @@ module.exports = async (ctx, next) => {
         await next()
         const openId = ctx.state.$wxInfo.userinfo.userinfo.openId
         await updateUserInfo(openId, cookies)
+    } else {
+        console.log(JSON.parse(returnData.text))
     }
 }
 

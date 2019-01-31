@@ -38,5 +38,8 @@ router.get('/get_check_code', controllers.getCheckCode)
 router.get('/get_card_info', controllers.getCardInfo)
 router.post('/card_payment', controllers.cardPayment)
 router.get('/get_room_info', controllers.getRoomInfo)
+router.post('/room_payment', controllers.roomPayment)
+router.get('/get_net_info', controllers.getNetInfo)
+router.post('/net_payment', controllers.netPayment)
 
 module.exports = router

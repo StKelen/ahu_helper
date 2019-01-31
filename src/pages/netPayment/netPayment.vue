@@ -34,11 +34,8 @@
                 <div class="card">
                     <div class="title">充值目标</div>
                     <div>
-                        <span class="select-info">充值目标</span>
-                        <span
-                            class="select-content"
-                            @click="modalChoose('充值目标',cardInfo.payTarget,'name',targetChooseResult)"
-                        >{{payTargetString}}</span>
+                        <span class="select-info">缴费系统</span>
+                        <span class="select-content disabled">城市热点</span>
                     </div>
                 </div>
                 <div class="card">
@@ -47,11 +44,11 @@
                         <span class="select-info">支付方式</span>
                         <span
                             class="select-content"
-                            @click="modalChoose('支付方式', cardInfo.payMethods, 'content', methodChooseResult)"
+                            @click="modalChoose('支付方式', netInfo.payList, 'name', methodChooseResult)"
                         >{{payMethodString}}</span>
                     </div>
                 </div>
-                <button @click="cardPayment">充值!</button>
+                <button @click="netPayment">充值!</button>
                 <modal
                     :visible="modalVisible"
                     :title="modalTitle"
@@ -130,32 +127,31 @@ export default {
                 }
             ],
             modalVisible: false,
+            modalList: [],
             modalTitle: '',
             modalShowKey: '',
-            modalList: [],
             resultMethod: function () {},
-            cardInfo: {},
+            netInfo: {},
             paymentInfo: {},
-            payMethodString: '请选择',
-            payTargetString: '请选择'
+            payMethodString: '请选择'
         }
     },
     mounted () {
         this.id = this.$root.$mp.query.id
         this.imageUrl = this.$root.$mp.query.imageUrl
         this.title = this.$root.$mp.query.title
-        this.getCardInfo()
+        this.getNetInfo()
     },
     methods: {
-        async getCardInfo () {
+        async getNetInfo () {
             const openId = wx.getStorageSync('userInfo').openId
-            this.cardInfo = await get(
-                '/weapp/get_card_info' + `?open_id=${openId}&id=${this.id}`
+            this.netInfo = await get(
+                '/weapp/get_net_info' + `?open_id=${openId}&id=${this.id}`
             )
-            console.log(this.cardInfo)
+            console.log(this.netInfo)
         },
         onSelect (index, price) {
-            this.paymentInfo.tranamt = parseFloat(price) * 100
+            this.paymentInfo.tran = parseFloat(price) * 100
             this.priceList.map((item, i) => {
                 item.checked =
                     index === i + 1 &&
@@ -173,22 +169,18 @@ export default {
         toogleVisible () {
             this.modalVisible = !this.modalVisible
         },
-        targetChooseResult (index) {
-            this.paymentInfo.acctype = this.cardInfo.payTarget[index].acctype
-            this.paymentInfo.account = this.cardInfo.payTarget[0].account
-            this.payTargetString = this.cardInfo.payTarget[index].name
-            this.toogleVisible()
-        },
         methodChooseResult (index) {
             // 注意这里是对象，要获取值，用value
-            this.paymentInfo.paymethod = this.cardInfo.payMethods[index].value
-            this.payMethodString = this.cardInfo.payMethods[index].content
+            this.paymentInfo.paytype = this.netInfo.payList[index].paytype
+            this.payMethodString = this.netInfo.payList[index].name
             this.toogleVisible()
         },
-        async cardPayment () {
-            this.paymentInfo.cookies = this.cardInfo.cookies
-            const dd = await post('/weapp/card_payment', this.paymentInfo)
-            console.log(dd)
+        async netPayment () {
+            this.paymentInfo.cookies = this.netInfo.cookies
+            this.paymentInfo.account = this.netInfo.studentAccount
+            this.paymentInfo.netacc = this.netInfo.netacc
+            console.log(this.paymentInfo)
+            await post('/weapp/net_payment', this.paymentInfo)
         }
     }
 }
@@ -268,7 +260,6 @@ p::after {
         rgba(244, 247, 252, 0) 100%
     );
     z-index: 1;
-    /* 244 247 252 */
 }
 
 .card {
@@ -320,6 +311,9 @@ p::after {
     background-color: #fff;
     border: 3rpx solid #ffb200;
     border-radius: 3rpx;
+}
+.disabled{
+    background-color: #DDD;
 }
 .select-content::after {
     display: block;

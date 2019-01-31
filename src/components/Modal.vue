@@ -7,14 +7,16 @@
         <div class="modal">
             <div @click.stop class="modal-content">
                 <div class="modal-title">{{title}}</div>
-                <div class="modal-actions">
-                    <button
-                        v-for="(item,index) in list"
-                        :key="index"
-                        class="modal-action"
-                        @click="callResultMethod(index)"
-                    >{{item[showKey]}}</button>
-                </div>
+                <scroll-view scroll-y="true">
+                    <div class="modal-actions">
+                        <button
+                            v-for="(item,index) in list"
+                            :key="index"
+                            class="modal-action"
+                            @click="callResultMethod(index)"
+                        >{{item[showKey]}}</button>
+                    </div>
+                </scroll-view>
             </div>
         </div>
     </div>
@@ -75,31 +77,37 @@ export default {
 }
 .modal {
     position: absolute;
-    overflow: auto;
     width: 750rpx;
-    height: 100%;
+    height: 70vh;
+    margin-top:15vh;
     z-index: 1000;
     display: flex;
     align-items: center;
     justify-content: center;
     transform: translateZ(1rpx);
-
-    /* opacity: 0;
-    visibility: hidden; */
 }
 .modal-content {
-    border-radius: 7px;
-    padding-top: 15px;
+    border-radius: 14rpx;
     width: 600rpx;
+    margin:auto;
     background-color: #fff;
-    overflow: hidden;
 }
 .modal-title {
-    padding: 12rpx 30rpx 30rpx 30rpx;
+    height: 9vh;
     margin: 0;
     font-size: 36rpx;
+    line-height: 9vh;
     color: #1c2438;
     text-align: center;
+    font-weight: bold;
+    border-bottom: 5rpx solid #888;
+}
+scroll-view{
+    max-height: 60vh;
+}
+.modal-actions{
+    width: 550rpx;
+    margin: auto;
 }
 .modal-action {
     text-align: center;
@@ -109,11 +117,11 @@ export default {
     line-height: 80rpx;
     border-radius: 0;
     color: #495060;
-    background-color: #fff;
+    background-color: #FFF;
+    border-bottom: 0.2rpx solid #DDD;
 }
 .modal-action::after {
     border: 0;
     border-radius: 0;
-    border-top: 0.2rpx solid #aaa;
 }
 </style>
