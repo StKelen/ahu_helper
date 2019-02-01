@@ -1,7 +1,9 @@
 <template>
-    <div>
-        <img id="avatar" :src="userInfo.avatarUrl" alt="头像">
-        <div v-if="!userInfo.openId">
+    <div class="person-page">
+        <div class="avatar-content">
+            <img id="avatar" :src="userInfo.avatarUrl" alt="头像">
+        </div>
+        <div v-if="!userInfo.openId" class="input-field">
             <div class="input-area">
                 <input type="text" id="study-number" placeholder="学号" @input="getStudyNumber">
             </div>
@@ -10,9 +12,9 @@
             </div>
             <div class="input-area">
                 <input type="text" id="serial-number" placeholder="验证码"  @input="getSerialNumber">
-                <img :src="checkCodeUrl" alt="验证码">
+                <img :src="checkCodeUrl" alt="验证码" @click="getPic">
             </div>
-            <button open-type="getUserInfo" lang="zh_CN" @getuserinfo="onLogin">登录</button>
+            <button open-type="getUserInfo" lang="zh_CN" @getuserinfo="onLogin">登　录</button>
         </div>
     </div>
 </template>
@@ -31,25 +33,40 @@ export default {
             cookie: '',
             studyNumber: '',
             password: '',
-            serialNumber: ''
+            serialNumber: '',
+            notice: ''
         }
     },
     methods: {
         async getPicAndCookie () {
-            const data = await get('/weapp/get_check_code')
-            this.checkCodeUrl = 'data:image/png;base64,' + data.PictureAndCookie.image
-            this.cookie = data.PictureAndCookie.cookie
+            const data = await get('/weapp/get_check_code_cookie')
+            this.checkCodeUrl = 'data:image/png;base64,' + data.image
+            this.cookie = data.cookie
+        },
+        async getPic () {
+            const data = await get(`/weapp/get_check_code?cookies=${this.cookie}`)
+            this.checkCodeUrl = 'data:image/png;base64,' + data.image
         },
         onLogin () {
             login.setLoginUrl(config.loginUrl)
             login.login({
                 success: (userInfo) => {
-                    console.log(this.userInfo)
                     this.userInfo = userInfo
                     wx.setStorageSync('userInfo', userInfo)
+                    wx.showToast({
+                        title: '登录成功',
+                        icon: 'none',
+                        image: '/static/images/success.png',
+                        mask: true
+                    })
                 },
                 fail: (err) => {
-                    console.log('登录失败', err)
+                    wx.showToast({
+                        title: err,
+                        icon: 'none',
+                        image: '/static/images/warning.png',
+                        mask: true
+                    })
                 },
                 studyNumber: this.studyNumber,
                 password: this.password,
@@ -80,17 +97,52 @@ export default {
         if (!this.userInfo.openId) {
             this.getPicAndCookie()
         }
+        this.notice = this.$root.$mp.query.notice
+        if (this.notice) {
+            wx.showToast({
+                title: this.notice,
+                icon: 'none',
+                image: '/static/images/info.png',
+                mask: true
+            })
+        }
     }
 }
 </script>
 
 <style scoped>
-#avatar {
+#person-page{
+    position: relative;
+}
+.avatar-content{
+    position: relative;
     display: block;
+    width: 220rpx;
+    height: 220rpx;
+    margin: 120rpx auto 0 auto;
+    border-radius: 100rpx;
+    z-index: 1;
+    background-color: #FFF;
+
+}
+#avatar {
     width: 200rpx;
     height: 200rpx;
-    margin: 150rpx auto;
+    margin: 10rpx;
     border-radius: 100rpx;
+}
+.input-field{
+    position: relative;
+    width: 80%;
+    margin: auto;
+    margin-top: -120rpx;
+    padding-top: 100rpx;
+    padding-bottom: 100rpx;
+    border-radius: 30rpx;
+    z-index: 0;
+    background-color: #FFF;
+    box-shadow: 0 0 40rpx 30rpx rgba(225, 225, 225, 0.2),
+        0 20rpx 40rpx 0rpx rgba(0, 0, 0, 0.15);
 }
 .input-area {
     height: 80rpx;
@@ -99,17 +151,14 @@ export default {
 }
 input {
     height: 100%;
-    padding-left: 120rpx;
-    padding-right: 40rpx;
+    padding-left: 70rpx;
     font-size: 40rpx;
     font-weight: light;
-    color: #888;
-    background-color: #FFF;
-    background-size: 60rpx 60rpx;
+    color: #999;
+    background-size: 40rpx 40rpx;
     background-repeat: no-repeat;
-    background-position: 30rpx center;
-    box-shadow: 0rpx 0rpx 15rpx #DFDFDF inset;
-    border-radius: 40rpx;
+    background-position: 10rpx center;
+    border-bottom: 2rpx solid #CCC;
 }
 #study-number {
     background-image:  url('../../../static/images/card.png');
@@ -124,15 +173,25 @@ input {
 }
 .input-area img {
     float: right;
-    width: 210rpx;
-    height: 80rpx;
+    width: 180rpx;
+    height: 70rpx;
+    margin-right: 40rpx;
 }
 button {
     width: 70%;
     height: 80rpx;
-    background-color: rgb(255, 201, 0);
-    color: #FFF;
-    font-weight: bold;
-    border-radius: 20rpx;
+    line-height: 70rpx;
+    font-size: 40rpx;
+    background-image: linear-gradient(
+        45deg,
+        #FFD511 20%,
+        #F8A508
+    ); 
+    background-color: #F8A508;
+    color: #333;
+    border-radius: 40rpx;
+}
+button::after{
+    border: none;
 }
 </style>

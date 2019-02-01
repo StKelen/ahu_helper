@@ -25,7 +25,10 @@ module.exports = async (ctx, next) => {
         const openId = ctx.state.$wxInfo.userinfo.userinfo.openId
         await updateUserInfo(openId, cookies)
     } else {
-        console.log(JSON.parse(returnData.text))
+        ctx.state = {
+            code: 0,
+            data: JSON.parse(returnData.text).Msg.replace(/\//g, '')
+        }
     }
 }
 
@@ -43,17 +46,6 @@ function sendLoginRequsetPromise (headers, loginData) {
         .end((err, result) => {
             if (err) reject(err)
             resolve(result)
-        })
-    })
-}
-
-function realLoginPromise (headers) {
-    return new Promise((resolve, reject) => {
-        agent.get(config.hallUrl + 'User/User')
-        .set(headers)
-        .end((err, res) => {
-            if (err) reject(err)
-            resolve(res)
         })
     })
 }

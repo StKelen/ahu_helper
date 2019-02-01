@@ -11,7 +11,7 @@
     "lint": "eslint --fix --ext .js,.vue src"
   },
   "dependencies": {
-    "mpvue": "^1.0.11",
+    "mpvue": "1.0.18",
     "vuex": "^3.0.1",
     "wafer2-client-sdk": "^2.1.0"
   },
@@ -45,8 +45,8 @@
     "glob": "^7.1.2",
     "html-webpack-plugin": "^3.2.0",
     "http-proxy-middleware": "^0.18.0",
-    "mpvue-loader": "^1.1.2",
-    "mpvue-template-compiler": "^1.0.11",
+    "mpvue-loader": "1.1.4",
+    "mpvue-template-compiler": "1.0.18",
     "mpvue-webpack-target": "^1.0.0",
     "optimize-css-assets-webpack-plugin": "^3.2.0",
     "ora": "^2.0.0",

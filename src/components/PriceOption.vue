@@ -2,7 +2,6 @@
     <div class="option" :style="OptionStyle" @click="onClick">
         <input v-if="custom" type="text" placeholder="自定义" @input="onInput">
         <p v-else>{{price}}</p>
-        <img src="/static/images/selected.png" alt="selected" v-if="checked">
     </div>
 </template>
 
@@ -27,10 +26,6 @@ export default {
     },
     data () {
         return {
-            backgroundColor: '#FDF9E1', // '#E6E6E6',
-            checkedBackgroundColor: '#FFFFFF',
-            borderColor: 'transparent',
-            checkedBorderColor: '#FFB200',
             finalPrice: 0
         }
     },
@@ -56,8 +51,9 @@ export default {
     computed: {
         OptionStyle () {
             return this.ObjToStyle({
-                backgroundColor: this.checked ? this.checkedBackgroundColor : this.backgroundColor,
-                borderColor: this.checked ? this.checkedBorderColor : this.borderColor
+                backgroundColor: this.checked ? '' : '#FDF9E1',
+                backgroundImage: this.checked ? 'linear-gradient(135deg, #FFD511 20%, #F8A508)' : '',
+                color: this.checked ? '#000' : '#666'
             })
         }
     }
@@ -72,23 +68,19 @@ export default {
     width: 150rpx;
     height: 72rpx;
     margin: 10rpx 10rpx;
-    border-width: 3rpx;
     border-radius: 6rpx;
     border-style: solid;
     justify-content: center;
     text-align: center;
     z-index: 0;
+    border-width: 0;
+}
+.option{
+    font-size: 32rpx;
+    font-weight: light;
 }
 p{
     font-size: 32rpx;
     font-weight: light;
-}
-.option img{
-    display: block;
-    position: absolute;
-    right: 0rpx;
-    bottom: 0rpx;
-    width: 34rpx;
-    height: 34rpx;
 }
 </style>

@@ -34,12 +34,15 @@ router.get('/message', controllers.message.get)
 router.post('/message', controllers.message.post)
 
 router.get('/index_list', controllers.indexList)
-router.get('/get_check_code', controllers.getCheckCode)
+router.get('/get_check_code_cookie', controllers.getCheckCode.getPicWithoutCookie)
+router.get('/get_check_code', controllers.getCheckCode.getPicWithCookie)
 router.get('/get_card_info', controllers.getCardInfo)
 router.post('/card_payment', controllers.cardPayment)
 router.get('/get_room_info', controllers.getRoomInfo)
 router.post('/room_payment', controllers.roomPayment)
 router.get('/get_net_info', controllers.getNetInfo)
 router.post('/net_payment', controllers.netPayment)
+router.get('/user_info', controllers.getUserInfo)
+router.post('/check_valid', controllers.checkValid)
 
 module.exports = router

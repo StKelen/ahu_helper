@@ -3,19 +3,16 @@
         <li>
             <card v-for="(item, index) in cardList" :key="index" :imageUrl="item.url" :name="item.title" :url="payUrl(item.id, item.url, item.title)"></card>
         </li>
-        <notice type="info" content="这是一条提示" />
     </div>
 </template>
 
 <script>
 import Card from '@/components/Card.vue'
-import Notice from '@/components/Notice.vue'
 import {get} from '@/utils/util'
 import config from '@/config'
 export default {
     components: {
-        Card,
-        Notice
+        Card
     },
     data () {
         return {
@@ -34,6 +31,9 @@ export default {
             if (id === 1) return '/pages/cardPayment/main?id=' + id + '&imageUrl=' + imageUrl + '&title=' + title
             if (id === 2 || id === 3) return '/pages/elecPayment/main?id=' + id + '&imageUrl=' + imageUrl + '&title=' + title
             if (id === 4) return '/pages/netPayment/main?id=' + id + '&imageUrl=' + imageUrl + '&title=' + title
+        },
+        toogleNotice () {
+            this.noticeVisible = !this.noticeVisible
         }
     },
     mounted () {

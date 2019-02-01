@@ -65,7 +65,7 @@
 <script>
 import PriceOption from '@/components/PriceOption.vue'
 import Modal from '@/components/Modal.vue'
-import { get, post } from '@/utils/util'
+import { get, post, userValid } from '@/utils/util'
 export default {
     components: {
         PriceOption,
@@ -140,6 +140,10 @@ export default {
         this.id = this.$root.$mp.query.id
         this.imageUrl = this.$root.$mp.query.imageUrl
         this.title = this.$root.$mp.query.title
+        this.getNetInfo()
+    },
+    onShow () {
+        userValid()
         this.getNetInfo()
     },
     methods: {

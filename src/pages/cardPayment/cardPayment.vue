@@ -16,7 +16,7 @@
             style="height: 70vh; z-index: 0; margin-top: 30vh;"
             scroll-y="true"
         >
-            <div style="height: 60vh; padding-top: 10vh;">
+            <div style="height: 60vh; padding-top: 12vh;">
                 <div class="card">
                     <div class="title">充值金额<span>（单位：元）</span></div>
                     <div class="content">
@@ -68,7 +68,7 @@
 <script>
 import PriceOption from '@/components/PriceOption.vue'
 import Modal from '@/components/Modal.vue'
-import { get, post } from '@/utils/util'
+import { get, post, userValid } from '@/utils/util'
 export default {
     components: {
         PriceOption,
@@ -144,6 +144,9 @@ export default {
         this.id = this.$root.$mp.query.id
         this.imageUrl = this.$root.$mp.query.imageUrl
         this.title = this.$root.$mp.query.title
+    },
+    onShow () {
+        userValid()
         this.getCardInfo()
     },
     methods: {
@@ -180,7 +183,6 @@ export default {
             this.toogleVisible()
         },
         methodChooseResult (index) {
-            // 注意这里是对象，要获取值，用value
             this.paymentInfo.paymethod = this.cardInfo.payMethods[index].value
             this.payMethodString = this.cardInfo.payMethods[index].content
             this.toogleVisible()
@@ -198,11 +200,14 @@ export default {
 #header {
     width: 100%;
     height: 40vh;
-    background-image: linear-gradient(
+    /* background-image: linear-gradient(
         180deg,
-        #ffe100 20%,
-        #ffb200
-    ); /*#FFE980 FFA933*/
+        #FFD511 20%,
+        #F8A508
+    ); #FFE980 FFA933 */
+    background-color: #FFF;
+    box-shadow: 0 0 40rpx 30rpx rgba(225, 225, 225, 0.2),
+        0 20rpx 40rpx 0rpx rgba(0, 0, 0, 0.15);
     border-radius: 0 0 10vh 10vh;
     position: fixed;
     top: 0;
@@ -311,27 +316,23 @@ p::after {
 .select-content {
     display: inline-block;
     position: relative;
-    width: 300rpx;
+    width: 400rpx;
     font-size: 32rpx;
     line-height: 60rpx;
     padding-left: 20rpx;
     margin-left: 50rpx;
     color: #666;
-    background-color: #fff;
-    border: 3rpx solid #ffb200;
-    border-radius: 3rpx;
 }
 .select-content::after {
-    display: block;
     content: '';
-    position: absolute;
-    width: 0;
-    height: 0;
-    right: -1rpx;
-    bottom: -1rpx;
-    border-width: 30rpx 30rpx 0 0;
-    border-style: solid;
-    border-color: transparent #ffb200;
+    float: right;
+    display: block;
+    background-image: url('../../../static/images/target.png');
+    background-repeat: no-repeat;
+    margin-top: 10rpx;
+    width: 40rpx;
+    height: 40rpx;
+    background-size: 40rpx 40rpx;
 }
 button {
     width: 550rpx;

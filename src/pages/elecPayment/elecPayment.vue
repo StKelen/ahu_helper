@@ -72,7 +72,7 @@
 <script>
 import PriceOption from '@/components/PriceOption.vue'
 import Modal from '@/components/Modal.vue'
-import { get, post } from '@/utils/util'
+import { get, post, userValid } from '@/utils/util'
 export default {
     components: {
         PriceOption,
@@ -150,6 +150,10 @@ export default {
         this.title = this.$root.$mp.query.title
         this.getRoomInfo()
     },
+    onShow () {
+        userValid()
+        this.getRoomInfo()
+    },
     methods: {
         async getRoomInfo () {
             const openId = wx.getStorageSync('userInfo').openId
@@ -214,9 +218,12 @@ export default {
     height: 40vh;
     background-image: linear-gradient(
         180deg,
-        #ffe100 20%,
-        #ffb200
-    ); /*#FFE980 FFA933*/
+        #FFD511 20%,
+        #F8A508
+    ); /* #FFE980 FFA933 */
+    /* background-color: #FFF;
+    box-shadow: 0 0 40rpx 30rpx rgba(225, 225, 225, 0.2),
+        0 20rpx 40rpx 0rpx rgba(0, 0, 0, 0.15); */
     border-radius: 0 0 10vh 10vh;
     position: fixed;
     top: 0;
@@ -294,7 +301,12 @@ p::after {
     box-shadow: 0 0 40rpx 30rpx rgba(225, 225, 225, 0.2),
         0 20rpx 40rpx 0rpx rgba(0, 0, 0, 0.15);
 }
-
+.card>div{
+    border-bottom: 1rpx solid #CCC;
+}
+.card>div:first-child,.card>div:last-child{
+    border-bottom: none;
+}
 .title {
     padding-bottom: 10rpx;
     padding-left: 30rpx;
@@ -325,15 +337,12 @@ p::after {
 .select-content {
     display: inline-block;
     position: relative;
-    width: 300rpx;
+    width: 400rpx;
     font-size: 32rpx;
     line-height: 60rpx;
     padding-left: 20rpx;
     margin-left: 50rpx;
     color: #666;
-    background-color: #fff;
-    border: 3rpx solid #ffb200;
-    border-radius: 3rpx;
 }
 .input-content {
     display: inline-block;
@@ -343,22 +352,21 @@ p::after {
     line-height: 60rpx;
     padding-left: 20rpx;
     margin-left: 50rpx;
+    margin-bottom: -10rpx;
     color: #666;
-    background-color: #fff;
-    border: 3rpx solid #ffb200;
+    border: 3rpx solid #CCC;
     border-radius: 3rpx;
 }
 .select-content::after {
-    display: block;
     content: '';
-    position: absolute;
-    width: 0;
-    height: 0;
-    right: -1rpx;
-    bottom: -1rpx;
-    border-width: 30rpx 30rpx 0 0;
-    border-style: solid;
-    border-color: transparent #ffb200;
+    float: right;
+    display: block;
+    background-image: url('../../../static/images/target.png');
+    background-repeat: no-repeat;
+    margin-top: 10rpx;
+    width: 40rpx;
+    height: 40rpx;
+    background-size: 40rpx 40rpx;
 }
 button {
     width: 550rpx;

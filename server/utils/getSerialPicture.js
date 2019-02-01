@@ -1,8 +1,14 @@
 const agent = require('superagent')
 
-async function getSerialPicture (config) {
+async function getSerialPictureCookie (config) {
     if ([config.hallUrl].some(v => v === undefined)) throw Error('服务大厅网址没有定义')
     const cookie = await getSessionIdPromise(config.hallUrl)
+    const imageBuffer = await getSerialPicturePromise(config.hallUrl, cookie)
+    return { image: imageBuffer.toString('base64'), cookie }
+}
+
+async function getPicture (config, cookie) {
+    if ([config.hallUrl].some(v => v === undefined)) throw Error('服务大厅网址没有定义')
     const imageBuffer = await getSerialPicturePromise(config.hallUrl, cookie)
     return { image: imageBuffer.toString('base64'), cookie }
 }
@@ -29,4 +35,7 @@ function getSerialPicturePromise (url, cookie) {
     })
 }
 
-module.exports = getSerialPicture
+module.exports = {
+    getSerialPictureCookie,
+    getPicture
+}

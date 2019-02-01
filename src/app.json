@@ -8,13 +8,13 @@
   ],
   "window": {
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#FFE100",
+    "navigationBarBackgroundColor": "#FFD511",
     "navigationBarTitleText": "安大充值帮",
     "navigationBarTextStyle": "black"
   },
   "tabBar": {
-    "color": "#555555",
-    "selectedColor": "#E9B200",
+    "color": "#999",
+    "selectedColor": "#F8A508",
     "list": [{
       "pagePath": "pages/index/main",
       "text": "功能列表",

@@ -83,11 +83,9 @@ function login (opts) {
             method: opts.method,
             success (result) {
                 const data = result.data
-
                 if (!data || data.code !== 0 || !data.data || !data.data.skey) {
-                    return opts.fail(new Error(`响应错误，${JSON.stringify(data)}`))
+                    return opts.fail(data.data)
                 }
-
                 const res = data.data
 
                 if (!res || !res.userinfo) {
