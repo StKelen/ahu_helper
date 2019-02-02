@@ -87,12 +87,15 @@ export default {
     transform: translateZ(1rpx);
 }
 .modal-content {
+    position: relative;
     border-radius: 14rpx;
     width: 600rpx;
     margin:auto;
     background-color: #fff;
 }
 .modal-title {
+    position: relative;
+    z-index: 1;
     height: 9vh;
     margin: 0;
     font-size: 36rpx;
@@ -100,9 +103,11 @@ export default {
     color: #1c2438;
     text-align: center;
     font-weight: bold;
-    border-bottom: 5rpx solid #888;
+    box-shadow: 0 10rpx 20rpx 0rpx rgba(0, 0, 0, 0.15);
 }
 scroll-view{
+    position: relative;
+    z-index: 0;
     max-height: 60vh;
 }
 .modal-actions{

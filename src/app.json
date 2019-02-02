@@ -4,12 +4,16 @@
     "pages/person/main",
     "pages/cardPayment/main",
     "pages/elecPayment/main",
-    "pages/netPayment/main"
+    "pages/netPayment/main",
+    "pages/personInfo/main",
+    "pages/recommend/main",
+    "pages/about/main",
+    "pages/openSource/main"
   ],
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#FFD511",
-    "navigationBarTitleText": "安大充值帮",
+    "navigationBarTitleText": "小安助手",
     "navigationBarTextStyle": "black"
   },
   "tabBar": {

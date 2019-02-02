@@ -33,9 +33,9 @@
                 </div>
                 <div class="card">
                     <div class="title">充值目标</div>
-                    <div>
+                    <div class="disabled">
                         <span class="select-info">缴费系统</span>
-                        <span class="select-content disabled">城市热点</span>
+                        <span class="select-content">城市热点</span>
                     </div>
                 </div>
                 <div class="card">
@@ -194,11 +194,9 @@ export default {
 #header {
     width: 100%;
     height: 40vh;
-    background-image: linear-gradient(
-        180deg,
-        #ffe100 20%,
-        #ffb200
-    ); /*#FFE980 FFA933*/
+    background-color: #FFF;
+    box-shadow: 0 0 40rpx 30rpx rgba(225, 225, 225, 0.2),
+        0 20rpx 40rpx 0rpx rgba(0, 0, 0, 0.15);
     border-radius: 0 0 10vh 10vh;
     position: fixed;
     top: 0;
@@ -269,7 +267,7 @@ p::after {
 .card {
     width: 700rpx;
     margin: 15rpx auto 30rpx auto;
-    padding: 25rpx 5rpx;
+    padding: 25rpx 0;
     background-color: #fff;
     border-radius: 25rpx;
     box-shadow: 0 0 40rpx 30rpx rgba(225, 225, 225, 0.2),
@@ -306,30 +304,26 @@ p::after {
 .select-content {
     display: inline-block;
     position: relative;
-    width: 300rpx;
+    width: 400rpx;
     font-size: 32rpx;
     line-height: 60rpx;
     padding-left: 20rpx;
     margin-left: 50rpx;
     color: #666;
-    background-color: #fff;
-    border: 3rpx solid #ffb200;
-    border-radius: 3rpx;
 }
 .disabled{
-    background-color: #DDD;
+    background-color: #EEE;
 }
 .select-content::after {
-    display: block;
     content: '';
-    position: absolute;
-    width: 0;
-    height: 0;
-    right: -1rpx;
-    bottom: -1rpx;
-    border-width: 30rpx 30rpx 0 0;
-    border-style: solid;
-    border-color: transparent #ffb200;
+    float: right;
+    display: block;
+    background-image: url('../../../static/images/target.png');
+    background-repeat: no-repeat;
+    margin-top: 10rpx;
+    width: 40rpx;
+    height: 40rpx;
+    background-size: 40rpx 40rpx;
 }
 button {
     width: 550rpx;

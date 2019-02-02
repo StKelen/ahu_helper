@@ -3,7 +3,8 @@
         <div class="avatar-content">
             <img id="avatar" :src="userInfo.avatarUrl" alt="头像">
         </div>
-        <div v-if="!userInfo.openId" class="input-field">
+        <div class="person-content">
+            <div v-if="!userInfo.openId" class="input-field">
             <div class="input-area">
                 <input type="text" id="study-number" placeholder="学号" @input="getStudyNumber">
             </div>
@@ -15,6 +16,16 @@
                 <img :src="checkCodeUrl" alt="验证码" @click="getPic">
             </div>
             <button open-type="getUserInfo" lang="zh_CN" @getuserinfo="onLogin">登　录</button>
+            </div>
+            <div v-else>
+            <ul class="person-list">
+                <a href="/pages/personInfo/main"><img src="/static/images/user.png" alt="个人信息">个人信息</a>
+                <a href="/pages/recommend/main"><img src="/static/images/feedback.png" alt="意见反馈">意见反馈</a>
+                <a ><button open-type="share"><img src="/static/images/recommend.png" alt="推荐">推荐给好友</button></a>
+                <a href="/pages/about/main"><img src="/static/images/about.png" alt="关于">关于小程序</a>
+                <a><img src="/static/images/logout.png" alt="退出">退出登录</a>
+            </ul>
+            </div>
         </div>
     </div>
 </template>
@@ -78,6 +89,10 @@ export default {
             const userInfo = wx.getStorageSync('userInfo')
             if (userInfo.openId) {
                 this.userInfo = userInfo
+            } else {
+                this.userInfo = {
+                    avatarUrl: `${config.personUrl}avatar.png`
+                }
             }
         },
         getStudyNumber (e) {
@@ -106,6 +121,9 @@ export default {
                 mask: true
             })
         }
+    },
+    onShow () {
+        this.getUserInfo()
     }
 }
 </script>
@@ -131,7 +149,7 @@ export default {
     margin: 10rpx;
     border-radius: 100rpx;
 }
-.input-field{
+.person-content{
     position: relative;
     width: 80%;
     margin: auto;
@@ -193,5 +211,53 @@ button {
 }
 button::after{
     border: none;
+}
+
+
+.person-list{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 75rpx;
+}
+
+.person-list a{
+    display: block;
+    padding: 15rpx 25rpx;
+    height: 50rpx;
+    border-bottom: 1rpx solid #CCC;
+    font-size: 32rpx;
+    color: #999;
+}
+.person-list button{
+    display: inline;
+    padding: 0;
+    border-radius: 0;
+    text-align: left;
+    font-size: 32rpx;
+    line-height: normal;
+    color: #999;
+    background: transparent;
+    box-sizing: unset;
+}
+.person-list a:last-child{
+    border-bottom: none;
+}
+.person-list a::after{
+    content: '';
+    float: right;
+    display: block;
+    background-image: url('../../../static/images/target.png');
+    background-repeat: no-repeat;
+    margin-top: 10rpx;
+    width: 40rpx;
+    height: 40rpx;
+    background-size: 40rpx 40rpx;
+}
+.person-list img{
+    width: 40rpx;
+    height: 40rpx;
+    margin-right: 20rpx;
+    margin-bottom: -6rpx;
 }
 </style>

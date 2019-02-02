@@ -216,14 +216,9 @@ export default {
 #header {
     width: 100%;
     height: 40vh;
-    background-image: linear-gradient(
-        180deg,
-        #FFD511 20%,
-        #F8A508
-    ); /* #FFE980 FFA933 */
-    /* background-color: #FFF;
+    background-color: #FFF;
     box-shadow: 0 0 40rpx 30rpx rgba(225, 225, 225, 0.2),
-        0 20rpx 40rpx 0rpx rgba(0, 0, 0, 0.15); */
+        0 20rpx 40rpx 0rpx rgba(0, 0, 0, 0.15);
     border-radius: 0 0 10vh 10vh;
     position: fixed;
     top: 0;
