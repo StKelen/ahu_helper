@@ -22,7 +22,10 @@ export function post (url, data) {
             method: 'POST',
             data,
             complete: function (res) {
-                if (res || res.data)resolve(res)
+                if (res || res.data) {
+                    resolve(res)
+                    console.log(res)
+                }
                 reject(res)
             }
         })
@@ -32,7 +35,9 @@ export function post (url, data) {
 export async function userValid () {
     let openId = wx.getStorageSync('userInfo').openId
     if (openId) {
-        let valid = await post('/weapp/check_valid', {openId})
+        let valid = await post('/weapp/check_valid', {
+            openId
+        })
         valid = valid.data.data.valid
         if (!valid) {
             try {
@@ -40,9 +45,13 @@ export async function userValid () {
             } catch (err) {
 
             }
-            wx.reLaunch({url: '/pages/person/main?notice=登录信息已过期~'})
+            wx.reLaunch({
+                url: '/pages/person/main?notice=登录信息已过期~'
+            })
         }
     } else {
-        wx.reLaunch({url: '/pages/person/main?notice=请登录~'})
+        wx.reLaunch({
+            url: '/pages/person/main?notice=请登录~'
+        })
     }
 }

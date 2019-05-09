@@ -35,7 +35,7 @@ function getPaymentPagePromise (cookies, forms) {
         'Origin': 'http://101.76.160.144'
     }
     return new Promise((resolve, reject) => {
-        agent.post(config.hallUrl + 'Page/Page')
+        agent.post(config.hallUrl + '/Page/Page')
         .set(headers)
         .send(forms)
         .type('form')
@@ -67,7 +67,7 @@ function getCardInfoPromise (cookies) {
         'X-Requested-With': 'XMLHttpRequest'
     }
     return new Promise((resolve, reject) => {
-        agent.post(config.hallUrl + 'User/GetCardInfoByAccountNoParm')
+        agent.post(config.hallUrl + '/User/GetCardInfoByAccountNoParm')
         .set(headers)
         .end((err, result) => {
             if (err) reject(err)
@@ -84,7 +84,7 @@ function getElecAccountInfoPromise (cookies) {
         'X-Requested-With': 'XMLHttpRequest'
     }
     return new Promise((resolve, reject) => {
-        agent.post(config.hallUrl + 'User/GetCardAccInfo')
+        agent.post(config.hallUrl + '/User/GetCardAccInfo')
         .set(headers)
         .end((err, result) => {
             if (err) reject(err)

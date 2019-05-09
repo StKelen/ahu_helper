@@ -3,31 +3,28 @@
         <div id="header">
             <div id="wrap-out">
                 <div id="img-wrap-in">
-                    <img
-                        id="header-image"
-                        :src="imageUrl"
-                    >
+                    <img :src="imageUrl" id="header-image">
                 </div>
                 <p>{{title}}</p>
             </div>
         </div>
         <div id="transprancy"></div>
-        <scroll-view
-            style="height: 70vh; z-index: 0; margin-top: 30vh;"
-            scroll-y="true"
-        >
+        <scroll-view scroll-y="true" style="height: 70vh; z-index: 0; margin-top: 30vh;">
             <div style="height: 60vh; padding-top: 12vh;">
                 <div class="card">
-                    <div class="title">充值金额<span>（单位：元）</span></div>
+                    <div class="title">
+                        充值金额
+                        <span>（单位：元）</span>
+                    </div>
                     <div class="content">
                         <price-option
-                            v-for="item in priceList"
-                            @select="onSelect"
+                            :checked="item.checked"
+                            :custom="item.custom"
+                            :index="item.index"
                             :key="item.index"
-                            :index=item.index
-                            :price=item.price
-                            :checked=item.checked
-                            :custom=item.custom
+                            :price="item.price"
+                            @select="onSelect"
+                            v-for="item in priceList"
                         ></price-option>
                     </div>
                 </div>
@@ -36,8 +33,8 @@
                     <div>
                         <span class="select-info">充值目标</span>
                         <span
-                            class="select-content"
                             @click="modalChoose('充值目标',cardInfo.payTarget,'name',targetChooseResult)"
+                            class="select-content"
                         >{{payTargetString}}</span>
                     </div>
                 </div>
@@ -46,19 +43,19 @@
                     <div>
                         <span class="select-info">支付方式</span>
                         <span
-                            class="select-content"
                             @click="modalChoose('支付方式', cardInfo.payMethods, 'content', methodChooseResult)"
+                            class="select-content"
                         >{{payMethodString}}</span>
                     </div>
                 </div>
                 <button @click="cardPayment">充值!</button>
                 <modal
-                    :visible="modalVisible"
-                    :title="modalTitle"
-                    :showKey="modalShowKey"
                     :list="modalList"
-                    @toogleVisible="toogleVisible"
+                    :showKey="modalShowKey"
+                    :title="modalTitle"
+                    :visible="modalVisible"
                     @resultMethod="resultMethod"
+                    @toogleVisible="toogleVisible"
                 ></modal>
             </div>
         </scroll-view>
@@ -133,7 +130,7 @@ export default {
             modalTitle: '',
             modalShowKey: '',
             modalList: [],
-            resultMethod: function () {},
+            resultMethod: function () { },
             cardInfo: {},
             paymentInfo: {},
             payMethodString: '请选择',
@@ -153,9 +150,8 @@ export default {
         async getCardInfo () {
             const openId = wx.getStorageSync('userInfo').openId
             this.cardInfo = await get(
-                '/weapp/get_card_info' + `?open_id=${openId}&id=${this.id}`
+                '/weapp/get_card_info' + `?open_id=${openId}&id=1`
             )
-            console.log(this.cardInfo)
         },
         onSelect (index, price) {
             this.paymentInfo.tranamt = parseFloat(price) * 100
@@ -189,6 +185,34 @@ export default {
         },
         async cardPayment () {
             this.paymentInfo.cookies = this.cardInfo.cookies
+            if (!this.paymentInfo.tranamt || this.paymentInfo.tranamt === 0 || isNaN(this.paymentInfo.tranamt)) {
+                wx.showToast({
+                    title: '充值金额错误',
+                    icon: 'none',
+                    image: '/static/images/warning.png',
+                    mask: true
+                })
+                return
+            }
+            if (!this.paymentInfo.acctype || this.paymentInfo.acctype === '') {
+                wx.showToast({
+                    title: '请选择充值目标',
+                    icon: 'none',
+                    image: '/static/images/warning.png',
+                    mask: true
+                })
+                return
+            }
+            if (!this.paymentInfo.paymethod || this.paymentInfo.paymethod === '' || this.paymentInfo.paymethod === '0') {
+                wx.showToast({
+                    title: '请选择支付方式',
+                    icon: 'none',
+                    image: '/static/images/warning.png',
+                    mask: true
+                })
+                return
+            }
+            console.log(this.paymentInfo)
             const dd = await post('/weapp/card_payment', this.paymentInfo)
             console.log(dd)
         }
@@ -205,7 +229,7 @@ export default {
         #FFD511 20%,
         #F8A508
     ); #FFE980 FFA933 */
-    background-color: #FFF;
+    background-color: #fff;
     box-shadow: 0 0 40rpx 30rpx rgba(225, 225, 225, 0.2),
         0 20rpx 40rpx 0rpx rgba(0, 0, 0, 0.15);
     border-radius: 0 0 10vh 10vh;

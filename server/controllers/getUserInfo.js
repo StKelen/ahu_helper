@@ -28,7 +28,7 @@ function getUserPagePromise (cookies) {
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
     }
     return new Promise((resolve, reject) => {
-        agent.post(config.hallUrl + 'User/GetCardInfoByAccountNoParm')
+        agent.post(config.hallUrl + '/User/GetCardInfoByAccountNoParm')
         .set(headers)
         .end((err, res) => {
             if (err) reject(err)

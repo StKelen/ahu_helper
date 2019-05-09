@@ -38,7 +38,7 @@ function sendLoginRequsetPromise (headers, loginData) {
         'Origin': 'http://101.76.160.144'
     })
     return new Promise((resolve, reject) => {
-        agent.post(config.hallUrl + 'Login/LoginBySnoQuery')
+        agent.post(config.hallUrl + '/Login/LoginBySnoQuery')
         .set(loginHeaders)
         .type('form')
         .send(loginData)

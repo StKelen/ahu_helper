@@ -53,7 +53,10 @@ const CONF = {
 
     // 安徽大学服务中心相关配置
     // 网站首页
-    hallUrl: 'http://101.76.160.144/'
+    hallUrl: 'http://101.76.160.144',
+    roomPayUrl: 'http://101.76.160.144/Tsm/Elec_Pay',
+    cardPayUrl: 'http://101.76.160.144/User/Account_Pay',
+    netPayUrl: 'http://101.76.160.144/Tsm/Net_Pay'
 }
 
 module.exports = CONF

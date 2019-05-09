@@ -36,7 +36,7 @@ function getNetPagePromise (cookies, forms) {
     }
     return new Promise((resolve, reject) => {
         agent
-      .post(config.hallUrl + 'Page/Page')
+      .post(config.hallUrl + '/Page/Page')
       .set(headers)
       .send(forms)
       .type('form')
@@ -80,7 +80,7 @@ function getNetaccPromise (cookies, aid, account) {
 
     return new Promise((resolve, reject) => {
         agent
-      .post(config.hallUrl + 'Tsm/TsmCommon')
+      .post(config.hallUrl + '/Tsm/TsmCommon')
       .set(headers)
       .send(data)
       .end((err, result) => {

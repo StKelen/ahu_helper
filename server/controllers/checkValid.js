@@ -28,7 +28,7 @@ function getAccountInfoPromise (cookies) {
     }
     return new Promise((resolve, reject) => {
         agent
-      .post(config.hallUrl + 'User/GetCardAccInfo')
+      .post(config.hallUrl + '/User/GetCardAccInfo')
       .set(headers)
       .end((err, result) => {
           if (err) reject(err)

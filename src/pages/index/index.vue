@@ -1,7 +1,7 @@
 <template>
     <div>
         <li>
-            <card v-for="(item, index) in cardList" :key="index" :imageUrl="item.url" :name="item.title" :url="payUrl(item.id, item.url, item.title)"></card>
+            <card v-for="(item, index) in cardList" :key="index" :imageUrl="item.icon" :name="item.title" :url="payUrl(item.id, item.icon, item.title)"></card>
         </li>
     </div>
 </template>
@@ -23,7 +23,7 @@ export default {
         async getList () {
             const listData = await get('/weapp/index_list')
             listData.list.map(item => {
-                item.url = `${config.host}/index_images/${item.url}`
+                item.icon = `${config.host}/index_images/${item.icon}`
             })
             this.cardList = listData.list
         },
