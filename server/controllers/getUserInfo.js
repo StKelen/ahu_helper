@@ -1,6 +1,6 @@
-const agent = require('superagent')
 const config = require('../config')
 const getCookies = require('../utils/getCookies')
+const sendRequest = require('../utils/sendRequest')
 
 module.exports = async ctx => {
     const openId = ctx.query['open_id']
@@ -27,12 +27,5 @@ function getUserPagePromise (cookies) {
         'X-Requested-With': 'XMLHttpRequest',
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
     }
-    return new Promise((resolve, reject) => {
-        agent.post(config.hallUrl + '/User/GetCardInfoByAccountNoParm')
-        .set(headers)
-        .end((err, res) => {
-            if (err) reject(err)
-            resolve(res)
-        })
-    })
+    return sendRequest(config.hallUrl + '/User/GetCardInfoByAccountNoParm', headers, false)
 }

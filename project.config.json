@@ -13,6 +13,8 @@
 	"compileType": "miniprogram",
 	"appid": "wx4301726b9f115e70",
 	"projectname": "ahu-pay",
+	"simulatorType": "wechat",
+	"simulatorPluginLibVersion": {},
 	"condition": {
 		"search": {
 			"current": -1,

@@ -1,38 +1,41 @@
-const agent = require('superagent')
+const sendRequest = require('./sendRequest')
 
 async function getSerialPictureCookie (config) {
-    if ([config.hallUrl].some(v => v === undefined)) throw Error('服务大厅网址没有定义')
-    const cookie = await getSessionIdPromise(config.hallUrl)
-    const imageBuffer = await getSerialPicturePromise(config.hallUrl, cookie)
-    return { image: imageBuffer.toString('base64'), cookie }
+    const cookie = await getSessionId(config.hallUrl)
+    if (cookie.code === -2) return cookie
+    const imageBuffer = await getSerialPicture(config.hallUrl, cookie)
+    if (cookie.code === -2) return imageBuffer
+    return {
+        code: 0,
+        data: {
+            image: imageBuffer.toString('base64'),
+            cookie
+        }
+    }
 }
 
 async function getPicture (config, cookie) {
-    if ([config.hallUrl].some(v => v === undefined)) throw Error('服务大厅网址没有定义')
-    const imageBuffer = await getSerialPicturePromise(config.hallUrl, cookie)
-    return { image: imageBuffer.toString('base64'), cookie }
+    const imageBuffer = await getSerialPicture(config.hallUrl, cookie)
+    return {
+        image: imageBuffer.toString('base64'),
+        cookie
+    }
 }
 
-function getSessionIdPromise (url) {
-    return new Promise((resolve, reject) => {
-        agent.post(url).end((err, res) => {
-            if (err) reject(err)
-            const cookie = String(res.headers['set-cookie'][0]).replace(/; path=\/; HttpOnly/, '')
-            resolve(cookie)
-        })
-    })
+async function getSessionId (url) {
+    const requestData = await sendRequest(url, {})
+    if (requestData.code === -2) return requestData
+    const cookie = String(requestData.headers['set-cookie'][0]).replace(/; path=\/; HttpOnly/, '')
+    return cookie
 }
 
-function getSerialPicturePromise (url, cookie) {
-    const headers = { cookie }
-    return new Promise((resolve, reject) => {
-        agent.post(url + 'Login/GetValidateCode')
-      .set(headers)
-      .end((err, res) => {
-          if (err) reject(err)
-          resolve(res.body)
-      })
-    })
+async function getSerialPicture (url, cookie) {
+    const headers = {
+        cookie
+    }
+    const requestData = await sendRequest(url + '/Login/GetValidateCode', headers, false)
+    if (requestData.code === -2) return requestData
+    return requestData.body
 }
 
 module.exports = {

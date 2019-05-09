@@ -50,7 +50,7 @@ export default {
     },
     methods: {
         async getPicAndCookie () {
-            const data = await get('/weapp/get_check_code_cookie')
+            const data = (await get('/weapp/get_check_code_cookie')).data
             this.checkCodeUrl = 'data:image/png;base64,' + data.image
             this.cookie = data.cookie
         },

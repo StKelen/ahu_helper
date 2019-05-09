@@ -1,14 +1,20 @@
 <template>
     <div>
         <li>
-            <card v-for="(item, index) in cardList" :key="index" :imageUrl="item.icon" :name="item.title" :url="payUrl(item.id, item.icon, item.title)"></card>
+            <card
+                :imageUrl="item.icon"
+                :key="index"
+                :name="item.title"
+                :url="payUrl(item.id, item.icon, item.title)"
+                v-for="(item, index) in cardList"
+            ></card>
         </li>
     </div>
 </template>
 
 <script>
 import Card from '@/components/Card.vue'
-import {get} from '@/utils/util'
+import { get } from '@/utils/util'
 import config from '@/config'
 export default {
     components: {
@@ -22,10 +28,12 @@ export default {
     methods: {
         async getList () {
             const listData = await get('/weapp/index_list')
-            listData.list.map(item => {
+            if (listData.code !== 0) return
+            const list = listData.data
+            list.map(item => {
                 item.icon = `${config.host}/index_images/${item.icon}`
             })
-            this.cardList = listData.list
+            this.cardList = list
         },
         payUrl (id, imageUrl, title) {
             if (id === 1) return '/pages/cardPayment/main?id=' + id + '&imageUrl=' + imageUrl + '&title=' + title

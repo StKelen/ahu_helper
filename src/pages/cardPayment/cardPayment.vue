@@ -149,9 +149,9 @@ export default {
     methods: {
         async getCardInfo () {
             const openId = wx.getStorageSync('userInfo').openId
-            this.cardInfo = await get(
-                '/weapp/get_card_info' + `?open_id=${openId}&id=1`
-            )
+            const cardInfoData = await get('/weapp/get_card_info' + `?open_id=${openId}&id=1`)
+            if (cardInfoData.code !== 0) return
+            this.cardInfo = cardInfoData.data
         },
         onSelect (index, price) {
             this.paymentInfo.tranamt = parseFloat(price) * 100
@@ -212,9 +212,22 @@ export default {
                 })
                 return
             }
-            console.log(this.paymentInfo)
-            const dd = await post('/weapp/card_payment', this.paymentInfo)
-            console.log(dd)
+            const paymentData = await post('/weapp/card_payment', this.paymentInfo)
+            if (paymentData.code === 0) {
+                wx.showToast({
+                    title: '支付成功',
+                    icon: 'none',
+                    image: '/static/images/success.png',
+                    mask: true
+                })
+            } else {
+                wx.showToast({
+                    title: paymentData.data,
+                    icon: 'none',
+                    image: '/static/images/warning.png',
+                    mask: true
+                })
+            }
         }
     }
 }
@@ -224,11 +237,6 @@ export default {
 #header {
     width: 100%;
     height: 40vh;
-    /* background-image: linear-gradient(
-        180deg,
-        #FFD511 20%,
-        #F8A508
-    ); #FFE980 FFA933 */
     background-color: #fff;
     box-shadow: 0 0 40rpx 30rpx rgba(225, 225, 225, 0.2),
         0 20rpx 40rpx 0rpx rgba(0, 0, 0, 0.15);

@@ -40,9 +40,9 @@ export default {
         },
         async getStudentInfo () {
             const openId = wx.getStorageSync('userInfo').openId
-            this.studentInfo = await get(
+            this.studentInfo = (await get(
                 '/weapp/user_info' + `?open_id=${openId}&id=${this.id}`
-            )
+            )).data
             console.log(this.studentInfo)
         }
     },

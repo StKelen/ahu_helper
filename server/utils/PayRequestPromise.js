@@ -1,4 +1,4 @@
-const agent = require('superagent')
+const sendRequset = require('./sendRequest')
 
 module.exports = async (url, cookies, data, isForm) => {
     const headers = {
@@ -9,38 +9,5 @@ module.exports = async (url, cookies, data, isForm) => {
         'X-Requested-With': 'XMLHttpRequest',
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
     }
-    if (isForm) {
-        return new Promise((resolve, reject) => {
-            agent
-                .post(url)
-                .set(headers)
-                .send(data)
-                .type('form')
-                .end((err, result) => {
-                    if (err) {
-                        reject({
-                            'code': 0,
-                            desc: '服务器连接失败'
-                        })
-                    }
-                    resolve(result)
-                })
-        })
-    } else {
-        return new Promise((resolve, reject) => {
-            agent
-                .post(url)
-                .set(headers)
-                .send(data)
-                .end((err, result) => {
-                    if (err) {
-                        reject({
-                            'code': 0,
-                            desc: '服务器连接失败'
-                        })
-                    }
-                    resolve(result)
-                })
-        })
-    }
+    return sendRequset(url, headers, isForm, data)
 }
