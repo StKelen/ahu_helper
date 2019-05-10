@@ -1,30 +1,51 @@
 <template>
     <div class="person-page">
         <div class="avatar-content">
-            <img id="avatar" :src="userInfo.avatarUrl" alt="头像">
+            <img :src="userInfo.avatarUrl" alt="头像" id="avatar">
         </div>
         <div class="person-content">
-            <div v-if="!userInfo.openId" class="input-field">
-            <div class="input-area">
-                <input type="text" id="study-number" placeholder="学号" @input="getStudyNumber">
-            </div>
-            <div class="input-area">
-                <input type="text" password=true id="password" placeholder="校园卡查询密码"  @input="getPassword">
-            </div>
-            <div class="input-area">
-                <input type="text" id="serial-number" placeholder="验证码"  @input="getSerialNumber">
-                <img :src="checkCodeUrl" alt="验证码" @click="getPic">
-            </div>
-            <button open-type="getUserInfo" lang="zh_CN" @getuserinfo="onLogin">登　录</button>
+            <div class="input-field" v-if="!userInfo.openId">
+                <div class="input-area">
+                    <input @input="getStudyNumber" id="study-number" placeholder="学号" type="text">
+                </div>
+                <div class="input-area">
+                    <input
+                        @input="getPassword"
+                        id="password"
+                        password="true"
+                        placeholder="校园卡查询密码"
+                        type="text"
+                    >
+                </div>
+                <div class="input-area">
+                    <input
+                        @input="getSerialNumber"
+                        id="serial-number"
+                        placeholder="验证码"
+                        type="text"
+                    >
+                    <img :src="checkCodeUrl" @click="getPic" alt="验证码">
+                </div>
+                <button @getuserinfo="onLogin" lang="zh_CN" open-type="getUserInfo">登 录</button>
             </div>
             <div v-else>
-            <ul class="person-list">
-                <a href="/pages/personInfo/main"><img src="/static/images/user.png" alt="个人信息">个人信息</a>
-                <a href="/pages/recommend/main"><img src="/static/images/feedback.png" alt="意见反馈">意见反馈</a>
-                <a ><button open-type="share"><img src="/static/images/recommend.png" alt="推荐">推荐给好友</button></a>
-                <a href="/pages/about/main"><img src="/static/images/about.png" alt="关于">关于小程序</a>
-                <a><img src="/static/images/logout.png" alt="退出">退出登录</a>
-            </ul>
+                <ul class="person-list">
+                    <a href="/pages/personInfo/main">
+                        <img alt="个人信息" src="/static/images/user.png">个人信息
+                    </a>
+                    <!-- <a href="/pages/recommend/main"><img src="/static/images/feedback.png" alt="意见反馈">意见反馈</a> -->
+                    <a>
+                        <button open-type="share">
+                            <img alt="推荐" src="/static/images/recommend.png">推荐给好友
+                        </button>
+                    </a>
+                    <a href="/pages/about/main">
+                        <img alt="关于" src="/static/images/about.png">关于小程序
+                    </a>
+                    <a @click="logOut">
+                        <img alt="退出" src="/static/images/logout.png">退出登录
+                    </a>
+                </ul>
             </div>
         </div>
     </div>
@@ -32,7 +53,7 @@
 
 <script>
 import config from '@/config'
-import {get} from '@/utils/util'
+import { get } from '@/utils/util'
 import login from '@/utils/login'
 export default {
     data () {
@@ -50,15 +71,47 @@ export default {
     },
     methods: {
         async getPicAndCookie () {
+            wx.showLoading({ title: '加载中' })
             const data = (await get('/weapp/get_check_code_cookie')).data
             this.checkCodeUrl = 'data:image/png;base64,' + data.image
             this.cookie = data.cookie
+            wx.hideLoading()
         },
         async getPic () {
+            wx.showLoading({ title: '加载中' })
             const data = await get(`/weapp/get_check_code?cookies=${this.cookie}`)
             this.checkCodeUrl = 'data:image/png;base64,' + data.image
+            wx.hideLoading()
         },
         onLogin () {
+            if (!this.studyNumber || this.studyNumber === '') {
+                wx.showToast({
+                    title: '请输入学号',
+                    icon: 'none',
+                    image: '/static/images/warning.png',
+                    mask: true
+                })
+                return
+            }
+            if (!this.password || this.password === '') {
+                wx.showToast({
+                    title: '请输入密码',
+                    icon: 'none',
+                    image: '/static/images/warning.png',
+                    mask: true
+                })
+                return
+            }
+            if (!this.serialNumber || this.serialNumber === '') {
+                wx.showToast({
+                    title: '请输入验证码',
+                    icon: 'none',
+                    image: '/static/images/warning.png',
+                    mask: true
+                })
+                return
+            }
+            wx.showLoading({ title: '登录中' })
             login.setLoginUrl(config.loginUrl)
             login.login({
                 success: (userInfo) => {
@@ -82,7 +135,10 @@ export default {
                 studyNumber: this.studyNumber,
                 password: this.password,
                 serialNumber: this.serialNumber,
-                cookie: this.cookie
+                cookie: this.cookie,
+                complete: function () {
+                    wx.hideLoading()
+                }
             })
         },
         getUserInfo () {
@@ -103,11 +159,19 @@ export default {
         },
         getSerialNumber (e) {
             this.serialNumber = e.mp.detail.value
+        },
+        logOut () {
+            try {
+                wx.clearStorageSync('userInfo')
+            } catch (error) {
+            }
+            Object.assign(this.$data, this.$options.data())
+            this.getPicAndCookie()
         }
     },
-    onLoad () {
-        this.getUserInfo()
-    },
+    // onLoad () {
+    //     this.getUserInfo()
+    // },
     mounted () {
         if (!this.userInfo.openId) {
             this.getPicAndCookie()
@@ -129,10 +193,10 @@ export default {
 </script>
 
 <style scoped>
-#person-page{
+#person-page {
     position: relative;
 }
-.avatar-content{
+.avatar-content {
     position: relative;
     display: block;
     width: 220rpx;
@@ -140,8 +204,7 @@ export default {
     margin: 120rpx auto 0 auto;
     border-radius: 100rpx;
     z-index: 1;
-    background-color: #FFF;
-
+    background-color: #fff;
 }
 #avatar {
     width: 200rpx;
@@ -149,7 +212,7 @@ export default {
     margin: 10rpx;
     border-radius: 100rpx;
 }
-.person-content{
+.person-content {
     position: relative;
     width: 80%;
     margin: auto;
@@ -158,7 +221,7 @@ export default {
     padding-bottom: 100rpx;
     border-radius: 30rpx;
     z-index: 0;
-    background-color: #FFF;
+    background-color: #fff;
     box-shadow: 0 0 40rpx 30rpx rgba(225, 225, 225, 0.2),
         0 20rpx 40rpx 0rpx rgba(0, 0, 0, 0.15);
 }
@@ -176,16 +239,16 @@ input {
     background-size: 40rpx 40rpx;
     background-repeat: no-repeat;
     background-position: 10rpx center;
-    border-bottom: 2rpx solid #CCC;
+    border-bottom: 2rpx solid #ccc;
 }
 #study-number {
-    background-image:  url('../../../static/images/card.png');
+    background-image: url('../../../static/images/card.png');
 }
 #password {
-    background-image:  url('../../../static/images/password.png');
+    background-image: url('../../../static/images/password.png');
 }
 #serial-number {
-    background-image:  url('../../../static/images/checkcode.png');
+    background-image: url('../../../static/images/checkcode.png');
     display: inline-block;
     width: 28%;
 }
@@ -200,36 +263,29 @@ button {
     height: 80rpx;
     line-height: 70rpx;
     font-size: 40rpx;
-    background-image: linear-gradient(
-        45deg,
-        #FFD511 20%,
-        #F8A508
-    ); 
-    background-color: #F8A508;
+    background-image: linear-gradient(45deg, #ffd511 20%, #f8a508);
+    background-color: #f8a508;
     color: #333;
     border-radius: 40rpx;
 }
-button::after{
+button::after {
     border: none;
 }
-
-
-.person-list{
+.person-list {
     display: flex;
     flex-direction: column;
     justify-content: center;
     margin-top: 75rpx;
 }
-
-.person-list a{
+.person-list a {
     display: block;
     padding: 15rpx 25rpx;
     height: 50rpx;
-    border-bottom: 1rpx solid #CCC;
+    border-bottom: 1rpx solid #ccc;
     font-size: 32rpx;
     color: #999;
 }
-.person-list button{
+.person-list button {
     display: inline;
     padding: 0;
     border-radius: 0;
@@ -240,10 +296,10 @@ button::after{
     background: transparent;
     box-sizing: unset;
 }
-.person-list a:last-child{
+.person-list a:last-child {
     border-bottom: none;
 }
-.person-list a::after{
+.person-list a::after {
     content: '';
     float: right;
     display: block;
@@ -254,7 +310,7 @@ button::after{
     height: 40rpx;
     background-size: 40rpx 40rpx;
 }
-.person-list img{
+.person-list img {
     width: 40rpx;
     height: 40rpx;
     margin-right: 20rpx;

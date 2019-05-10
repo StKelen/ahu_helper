@@ -142,9 +142,14 @@ export default {
         this.imageUrl = this.$root.$mp.query.imageUrl
         this.title = this.$root.$mp.query.title
     },
+    onLoad () {
+        Object.assign(this.$data, this.$options.data())
+    },
     onShow () {
         userValid()
+        wx.showLoading({ title: '加载中' })
         this.getCardInfo()
+        wx.hideLoading()
     },
     methods: {
         async getCardInfo () {
@@ -212,7 +217,9 @@ export default {
                 })
                 return
             }
+            wx.showLoading({ title: '支付中' })
             const paymentData = await post('/weapp/card_payment', this.paymentInfo)
+            wx.hideLoading()
             if (paymentData.code === 0) {
                 wx.showToast({
                     title: '支付成功',
@@ -220,6 +227,11 @@ export default {
                     image: '/static/images/success.png',
                     mask: true
                 })
+                setTimeout(() => {
+                    wx.navigateBack({
+                        delta: 1
+                    })
+                }, 2000)
             } else {
                 wx.showToast({
                     title: paymentData.data,

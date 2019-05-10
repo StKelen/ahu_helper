@@ -5,8 +5,8 @@
         </div>
         <p id="version">1.0.0</p>
         <ul class="list">
-            <a>用户协议</a>
-            <a>隐私协议</a>
+            <!-- <a>用户协议</a>
+            <a>隐私协议</a> -->
             <a href="/pages/openSource/main">开源相关</a>
         </ul>
         <p id="copyright">Powered By 极战の窝</p>

@@ -8,41 +8,33 @@ const controllers = require('../controllers')
 
 // 从 sdk 中取出中间件
 // 这里展示如何使用 Koa 中间件完成登录态的颁发与验证
-const { auth: { authorizationMiddleware, validationMiddleware } } = require('../qcloud')
+const { auth: { authorizationMiddleware } } = require('../qcloud')
 const hallLogin = require('../middlewares/login')
 
-// --- 登录与授权 Demo --- //
 // 登录接口
 router.get('/login', hallLogin, authorizationMiddleware, controllers.login)
-// 用户信息接口（可以用来验证登录态）
-router.get('/user', validationMiddleware, controllers.user)
 
-// --- 图片上传 Demo --- //
-// 图片上传接口，小程序端可以直接将 url 填入 wx.uploadFile 中
-router.post('/upload', controllers.upload)
-
-// --- 信道服务接口 Demo --- //
-// GET  用来响应请求信道地址的
-router.get('/tunnel', controllers.tunnel.get)
-// POST 用来处理信道传递过来的消息
-router.post('/tunnel', controllers.tunnel.post)
-
-// --- 客服消息接口 Demo --- //
-// GET  用来响应小程序后台配置时发送的验证请求
-router.get('/message', controllers.message.get)
-// POST 用来处理微信转发过来的客服消息
-router.post('/message', controllers.message.post)
-
+// 主页路由
 router.get('/index_list', controllers.indexList)
+// 获取验证码图片和Cookies路由
 router.get('/get_check_code_cookie', controllers.getCheckCode.getPicWithoutCookie)
+// 获取验证码图片路由
 router.get('/get_check_code', controllers.getCheckCode.getPicWithCookie)
+// 获取卡片支付信息路由
 router.get('/get_card_info', controllers.getCardInfo)
+// 发起校园卡支付请求路由
 router.post('/card_payment', controllers.cardPayment)
+// 获取寝室支付相关信息路由
 router.get('/get_room_info', controllers.getRoomInfo)
+// 发起寝室支付相关请求路由
 router.post('/room_payment', controllers.roomPayment)
+// 获取网络支付相关信息路由
 router.get('/get_net_info', controllers.getNetInfo)
+// 发起网络支付请求路由
 router.post('/net_payment', controllers.netPayment)
+// 获取用户个人信息路由
 router.get('/user_info', controllers.getUserInfo)
+// 验证登录状态是否有效路由
 router.post('/check_valid', controllers.checkValid)
 
 module.exports = router

@@ -1,6 +1,6 @@
 // 配置项
 
-const host = 'http://172.21.18.233:5757'
+const host = 'http://192.168.43.149:5757'
 
 const config = {
     host,

@@ -145,11 +145,15 @@ export default {
         this.id = this.$root.$mp.query.id
         this.imageUrl = this.$root.$mp.query.imageUrl
         this.title = this.$root.$mp.query.title
-        this.getRoomInfo()
+    },
+    onLoad () {
+        Object.assign(this.$data, this.$options.data())
     },
     onShow () {
         userValid()
+        wx.showLoading({ title: '加载中' })
         this.getRoomInfo()
+        wx.hideLoading()
     },
     methods: {
         async getRoomInfo () {
@@ -239,7 +243,9 @@ export default {
                 })
                 return
             }
+            wx.showLoading({ title: '支付中' })
             const paymentData = await post('/weapp/room_payment', this.paymentInfo)
+            wx.hideLoading()
             if (paymentData.code === 0) {
                 wx.showToast({
                     title: '缴费成功',
@@ -247,6 +253,11 @@ export default {
                     image: '/static/images/success.png',
                     mask: true
                 })
+                setTimeout(() => {
+                    wx.navigateBack({
+                        delta: 1
+                    })
+                }, 2000)
             } else {
                 wx.showToast({
                     title: paymentData.data,

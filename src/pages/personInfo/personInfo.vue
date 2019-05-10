@@ -43,14 +43,15 @@ export default {
             this.studentInfo = (await get(
                 '/weapp/user_info' + `?open_id=${openId}&id=${this.id}`
             )).data
-            console.log(this.studentInfo)
         }
     },
     onShow () {
         this.getUserInfo()
     },
     async mounted () {
+        wx.showLoading({ title: '加载中' })
         await this.getStudentInfo()
+        wx.hideLoading()
     }
 }
 </script>

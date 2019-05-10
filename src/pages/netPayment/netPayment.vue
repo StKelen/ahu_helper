@@ -139,9 +139,14 @@ export default {
         this.title = this.$root.$mp.query.title
         this.getNetInfo()
     },
+    onLoad () {
+        Object.assign(this.$data, this.$options.data())
+    },
     onShow () {
         userValid()
+        wx.showLoading({ title: '加载中' })
         this.getNetInfo()
+        wx.hideLoading()
     },
     methods: {
         async getNetInfo () {
@@ -198,7 +203,34 @@ export default {
                 })
                 return
             }
-            await post('/weapp/net_payment', this.paymentInfo)
+            wx.showLoading({ title: '支付中' })
+            const payReturnData = await post('/weapp/net_payment', this.paymentInfo)
+            wx.hideLoading()
+            if (payReturnData.code === 0) {
+                wx.showToast({
+                    title: '缴费成功',
+                    icon: 'none',
+                    image: '/static/images/success.png',
+                    mask: true
+                })
+                setTimeout(() => {
+                    wx.navigateBack({
+                        delta: 1
+                    })
+                }, 2000)
+            } else {
+                wx.showToast({
+                    title: payReturnData.data,
+                    icon: 'none',
+                    image: '/static/images/warning.png',
+                    mask: true
+                })
+            }
+            setTimeout(() => {
+                wx.navigateBack({
+                    delta: 1
+                })
+            }, 2000)
         }
     }
 }

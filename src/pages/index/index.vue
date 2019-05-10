@@ -45,7 +45,9 @@ export default {
         }
     },
     mounted () {
+        wx.showLoading({ title: '加载中' })
         this.getList()
+        wx.hideLoading()
     }
 }
 </script>

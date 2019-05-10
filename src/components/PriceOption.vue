@@ -1,6 +1,6 @@
 <template>
-    <div class="option" :style="OptionStyle" @click="onClick">
-        <input v-if="custom" type="text" placeholder="自定义" @input="onInput">
+    <div :style="OptionStyle" @click="onClick" class="option">
+        <input @input="onInput" placeholder="自定义" type="text" v-if="custom">
         <p v-else>{{price}}</p>
     </div>
 </template>
@@ -44,6 +44,7 @@ export default {
             this.$emit('select', this.index, this.finalPrice)
         },
         onInput (e) {
+            if (this.price <= 0) this.finalPrice = '0'
             this.finalPrice = parseInt(e.mp.detail.value)
             this.$emit('select', this.index, this.finalPrice)
         }
@@ -61,7 +62,7 @@ export default {
 </script>
 
 <style scoped>
-.option{
+.option {
     display: flex;
     position: relative;
     flex-direction: column;
@@ -75,11 +76,11 @@ export default {
     z-index: 0;
     border-width: 0;
 }
-.option{
+.option {
     font-size: 32rpx;
     font-weight: light;
 }
-p{
+p {
     font-size: 32rpx;
     font-weight: light;
 }
