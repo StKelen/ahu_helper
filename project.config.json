@@ -5,10 +5,9 @@
 		"es6": false,
 		"postcss": true,
 		"minified": true,
-		"newFeature": true,
-		"nodeModules": true
+		"newFeature": true
 	},
-	"miniprogramRoot": "dist/",
+	"miniprogramRoot": "dist/wx/",
 	"qcloudRoot": "server/",
 	"compileType": "miniprogram",
 	"appid": "wx4301726b9f115e70",

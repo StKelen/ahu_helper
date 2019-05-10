@@ -6,9 +6,9 @@
     "pages/elecPayment/main",
     "pages/netPayment/main",
     "pages/personInfo/main",
-    "pages/recommend/main",
     "pages/about/main",
-    "pages/openSource/main"
+    "pages/openSource/main",
+    "pages/bath/main"
   ],
   "window": {
     "backgroundTextStyle": "light",

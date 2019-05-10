@@ -39,6 +39,7 @@ export default {
             if (id === 1) return '/pages/cardPayment/main?id=' + id + '&imageUrl=' + imageUrl + '&title=' + title
             if (id === 2 || id === 3) return '/pages/elecPayment/main?id=' + id + '&imageUrl=' + imageUrl + '&title=' + title
             if (id === 4) return '/pages/netPayment/main?id=' + id + '&imageUrl=' + imageUrl + '&title=' + title
+            if (id === 5) return '/pages/bath/main'
         },
         toogleNotice () {
             this.noticeVisible = !this.noticeVisible
