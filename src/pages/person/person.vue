@@ -59,7 +59,7 @@ export default {
     data () {
         return {
             userInfo: {
-                avatarUrl: `${config.personUrl}avatar.png`
+                avatarUrl: `${config.personUrl}/avatar.png`
             },
             checkCodeUrl: '',
             cookie: '',

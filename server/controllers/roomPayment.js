@@ -1,5 +1,5 @@
 const config = require('../config')
-const payRequestPromise = require('../utils/payRequestPromise')
+const payRequestPromise = require('../utils/PayRequestPromise')
 const parseData = require('../utils/parseDataToObj')
 
 // 用于发起寝室供电、空调相关请求

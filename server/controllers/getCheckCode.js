@@ -1,4 +1,4 @@
-const {getSerialPictureCookie, getPicture} = require('../utils/getSerialPicture')
+const { getSerialPictureCookie, getPicture } = require('../utils/getSerialPicture')
 const config = require('../config')
 
 // 该模块用于获取用户有关验证码图片的处理
@@ -9,7 +9,7 @@ module.exports = {
         ctx.state = PictureAndCookie
     },
     // 如果已经有了Cookies，直接通过Cookies获取图片
-    getPicWithCookie: async(ctx) => {
+    getPicWithCookie: async (ctx) => {
         const cookies = ctx.query['cookies']
         const Pic = await getPicture(config.hallUrl, cookies)
         ctx.state = Pic

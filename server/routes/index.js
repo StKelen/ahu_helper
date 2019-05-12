@@ -36,5 +36,6 @@ router.post('/net_payment', controllers.netPayment)
 router.get('/user_info', controllers.getUserInfo)
 // 验证登录状态是否有效路由
 router.post('/check_valid', controllers.checkValid)
+router.get('/bath_info', controllers.bathInfo)
 
 module.exports = router

@@ -141,13 +141,11 @@ export default {
             targetBuildingString: '请选择'
         }
     },
-    mounted () {
+    onLoad () {
+        Object.assign(this.$data, this.$options.data())
         this.id = this.$root.$mp.query.id
         this.imageUrl = this.$root.$mp.query.imageUrl
         this.title = this.$root.$mp.query.title
-    },
-    onLoad () {
-        Object.assign(this.$data, this.$options.data())
     },
     onShow () {
         userValid()
