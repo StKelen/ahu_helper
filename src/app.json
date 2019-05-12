@@ -1,6 +1,5 @@
 {
   "pages": [
-    "pages/bath/main",
     "pages/index/main",
     "pages/person/main",
     "pages/cardPayment/main",
@@ -8,7 +7,8 @@
     "pages/netPayment/main",
     "pages/personInfo/main",
     "pages/about/main",
-    "pages/openSource/main"
+    "pages/openSource/main",
+    "pages/bath/main"
   ],
   "window": {
     "backgroundTextStyle": "light",
