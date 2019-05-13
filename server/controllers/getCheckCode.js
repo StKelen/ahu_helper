@@ -12,6 +12,6 @@ module.exports = {
     getPicWithCookie: async (ctx) => {
         const cookies = ctx.query['cookies']
         const Pic = await getPicture(config.hallUrl, cookies)
-        ctx.state = Pic
+        ctx.state.data = Pic
     }
 }

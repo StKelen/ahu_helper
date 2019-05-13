@@ -1,6 +1,8 @@
 const agent = require('superagent')
 const config = require('../config')
-const {mysql} = require('../qcloud')
+const {
+    mysql
+} = require('../qcloud')
 
 // 该中间件用于实现支付系统的模拟登陆
 module.exports = async (ctx, next) => {
@@ -14,7 +16,7 @@ module.exports = async (ctx, next) => {
     }
     // 生成发送的数据对象
     const loginData = {
-        // 学号
+    // 学号
         sno: ctx.headers['study-number'],
         // 密码
         pwd: password,
@@ -29,7 +31,7 @@ module.exports = async (ctx, next) => {
     const returnData = await sendLoginRequsetPromise(headers, loginData)
     // 验证是否登陆成功
     if (JSON.parse(returnData.text).IsSucceed) {
-        // 获取用户所有的登陆凭证并将存储于数据库中
+    // 获取用户所有的登陆凭证并将存储于数据库中
         let hallTicket = (returnData.headers['set-cookie'][0]).replace(/; path=\/; HttpOnly/, '')
         let cookies = headers.Cookie + '; ' + hallTicket
         // 继续执行下一个模块，先写入微信用户信息
@@ -38,7 +40,7 @@ module.exports = async (ctx, next) => {
         const openId = ctx.state.$wxInfo.userinfo.userinfo.openId
         await updateUserInfo(openId, cookies)
     } else {
-        // 返回用户登录失败信息
+    // 返回用户登录失败信息
         ctx.state = {
             code: 0,
             data: JSON.parse(returnData.text).Msg.replace(/\//g, '')
@@ -54,14 +56,14 @@ function sendLoginRequsetPromise (headers, loginData) {
     })
     return new Promise((resolve, reject) => {
         agent.post(config.hallUrl + '/Login/LoginBySnoQuery')
-        .set(loginHeaders)
-        .type('form')
-        .send(loginData)
-        .withCredentials()
-        .end((err, result) => {
-            if (err) reject(err)
-            resolve(result)
-        })
+            .set(loginHeaders)
+            .type('form')
+            .send(loginData)
+            .withCredentials()
+            .end((err, result) => {
+                if (err) reject(err)
+                resolve(result)
+            })
     })
 }
 

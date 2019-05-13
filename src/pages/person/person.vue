@@ -19,12 +19,30 @@
                 </div>
                 <div class="input-area">
                     <input
+                        @input="getJwPassword"
+                        id="jw-password"
+                        password="true"
+                        placeholder="教务系统密码"
+                        type="text"
+                    >
+                </div>
+                <div class="input-area">
+                    <input
                         @input="getSerialNumber"
                         id="serial-number"
                         placeholder="验证码"
                         type="text"
                     >
                     <img :src="checkCodeUrl" @click="getPic" alt="验证码">
+                </div>
+                <div class="input-area">
+                    <input
+                        @input="getJwSerialNumber"
+                        id="jw-serial-number"
+                        placeholder="验证码"
+                        type="text"
+                    >
+                    <img :src="jwCheckCodeUrl" @click="getJwPic" alt="验证码">
                 </div>
                 <button @getuserinfo="onLogin" lang="zh_CN" open-type="getUserInfo">登 录</button>
             </div>
@@ -33,7 +51,6 @@
                     <a href="/pages/personInfo/main">
                         <img alt="个人信息" src="/static/images/user.png">个人信息
                     </a>
-                    <!-- <a href="/pages/recommend/main"><img src="/static/images/feedback.png" alt="意见反馈">意见反馈</a> -->
                     <a>
                         <button open-type="share">
                             <img alt="推荐" src="/static/images/recommend.png">推荐给好友
@@ -59,13 +76,19 @@ export default {
     data () {
         return {
             userInfo: {
-                avatarUrl: `${config.personUrl}/avatar.png`
+                avatarUrl: config.personUrl + '/avatar.png'
             },
             checkCodeUrl: '',
             cookie: '',
+            jwCheckCodeUrl: '',
+            jwCookie: '',
             studyNumber: '',
             password: '',
+            jwPassword: '',
+            jwSerialNumber: '',
             serialNumber: '',
+            viewState: '',
+            viewStateGenerator: '',
             notice: ''
         }
     },
@@ -75,12 +98,23 @@ export default {
             const data = (await get('/weapp/get_check_code_cookie')).data
             this.checkCodeUrl = 'data:image/png;base64,' + data.image
             this.cookie = data.cookie
+            const jwData = (await get('/weapp/jw_check_code_cookie')).data
+            this.jwCheckCodeUrl = 'data:image/png;base64,' + jwData.jwImg
+            this.jwCookie = jwData.cookie
+            this.viewState = jwData.viewState
+            this.viewStateGenerator = jwData.viewStateGenerator
             wx.hideLoading()
         },
         async getPic () {
             wx.showLoading({ title: '加载中' })
             const data = await get(`/weapp/get_check_code?cookies=${this.cookie}`)
-            this.checkCodeUrl = 'data:image/png;base64,' + data.image
+            this.checkCodeUrl = 'data:image/png;base64,' + data.data.image
+            wx.hideLoading()
+        },
+        async getJwPic () {
+            wx.showLoading({ title: '加载中' })
+            const data = await get(`/weapp/jw_check_code?cookies=${this.jwCookie}`)
+            this.jwCheckCodeUrl = 'data:image/png;base64,' + data.data
             wx.hideLoading()
         },
         onLogin () {
@@ -131,14 +165,21 @@ export default {
                         image: '/static/images/warning.png',
                         mask: true
                     })
+                    this.getPic()
+                    this.getJwPic()
+                },
+                complete: function () {
+                    wx.hideLoading()
                 },
                 studyNumber: this.studyNumber,
                 password: this.password,
                 serialNumber: this.serialNumber,
                 cookie: this.cookie,
-                complete: function () {
-                    wx.hideLoading()
-                }
+                jwCookie: this.jwCookie,
+                jwPassword: this.jwPassword,
+                jwSerialNumber: this.jwSerialNumber,
+                viewState: this.viewState,
+                viewStateGenerator: this.viewStateGenerator
             })
         },
         getUserInfo () {
@@ -147,7 +188,7 @@ export default {
                 this.userInfo = userInfo
             } else {
                 this.userInfo = {
-                    avatarUrl: `${config.personUrl}avatar.png`
+                    avatarUrl: `${config.personUrl}/avatar.png`
                 }
             }
         },
@@ -157,8 +198,14 @@ export default {
         getPassword (e) {
             this.password = e.mp.detail.value
         },
+        getJwPassword (e) {
+            this.jwPassword = e.mp.detail.value
+        },
         getSerialNumber (e) {
             this.serialNumber = e.mp.detail.value
+        },
+        getJwSerialNumber (e) {
+            this.jwSerialNumber = e.mp.detail.value
         },
         logOut () {
             try {
@@ -201,7 +248,7 @@ export default {
     display: block;
     width: 220rpx;
     height: 220rpx;
-    margin: 120rpx auto 0 auto;
+    margin: 40rpx auto 0 auto;
     border-radius: 100rpx;
     z-index: 1;
     background-color: #fff;
@@ -218,7 +265,7 @@ export default {
     margin: auto;
     margin-top: -120rpx;
     padding-top: 100rpx;
-    padding-bottom: 100rpx;
+    padding-bottom: 50rpx;
     border-radius: 30rpx;
     z-index: 0;
     background-color: #fff;
@@ -247,7 +294,15 @@ input {
 #password {
     background-image: url('../../../static/images/password.png');
 }
+#jw-password {
+    background-image: url('../../../static/images/password.png');
+}
 #serial-number {
+    background-image: url('../../../static/images/checkcode.png');
+    display: inline-block;
+    width: 28%;
+}
+#jw-serial-number {
     background-image: url('../../../static/images/checkcode.png');
     display: inline-block;
     width: 28%;

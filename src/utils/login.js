@@ -73,7 +73,12 @@ function login (opts) {
             cookie: opts.cookie,
             'study-number': opts.studyNumber,
             password: opts.password,
-            'serial-number': opts.serialNumber
+            'serial-number': opts.serialNumber,
+            'jw-password': opts.jwPassword,
+            'jw-serial-number': opts.jwSerialNumber,
+            'jw-cookie': opts.jwCookie,
+            'view-state': opts.viewState,
+            'view-state-generator': opts.viewStateGenerator
         }
 
         // 请求服务器登录地址，获得会话信息

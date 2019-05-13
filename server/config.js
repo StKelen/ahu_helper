@@ -56,7 +56,12 @@ const CONF = {
     hallUrl: 'http://101.76.160.144',
     roomPayUrl: 'http://101.76.160.144/Tsm/Elec_Pay',
     cardPayUrl: 'http://101.76.160.144/User/Account_Pay',
-    netPayUrl: 'http://101.76.160.144/Tsm/Net_Pay'
+    netPayUrl: 'http://101.76.160.144/Tsm/Net_Pay',
+
+    // 教务系统相关配置
+    jwUrl: 'http://jw2.ahu.cn',
+    jwCheckImage: 'http://jw2.ahu.cn/CheckCode.aspx',
+    jwLoginUrl: 'http://jw2.ahu.cn/default2.aspx'
 }
 
 module.exports = CONF

@@ -13,6 +13,7 @@
     "dependencies": {
         "axios": "^0.18.0",
         "cheerio": "^1.0.0-rc.3",
+        "iconv-lite": "^0.4.24",
         "knex": "^0.16.5",
         "koa": "^2.7.0",
         "koa-bodyparser": "^4.2.1",
@@ -24,6 +25,7 @@
         "mysql": "^2.17.1",
         "pify": "^4.0.1",
         "superagent": "^5.0.5",
+        "superagent-charset": "^1.2.0",
         "wafer-node-sdk": "^1.4.0"
     },
     "devDependencies": {

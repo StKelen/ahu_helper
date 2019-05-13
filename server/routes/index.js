@@ -9,10 +9,12 @@ const controllers = require('../controllers')
 // 从 sdk 中取出中间件
 // 这里展示如何使用 Koa 中间件完成登录态的颁发与验证
 const { auth: { authorizationMiddleware } } = require('../qcloud')
+// 支付系统登录中间件
 const hallLogin = require('../middlewares/login')
+const jwLogin = require('../middlewares/jwLogin')
 
 // 登录接口
-router.get('/login', hallLogin, authorizationMiddleware, controllers.login)
+router.get('/login', jwLogin, hallLogin, authorizationMiddleware, controllers.login)
 
 // 主页路由
 router.get('/index_list', controllers.indexList)
@@ -36,6 +38,11 @@ router.post('/net_payment', controllers.netPayment)
 router.get('/user_info', controllers.getUserInfo)
 // 验证登录状态是否有效路由
 router.post('/check_valid', controllers.checkValid)
+// 获取浴室开放有关信息
 router.get('/bath_info', controllers.bathInfo)
+// 获取教务系统验证码和Cookies
+router.get('/jw_check_code_cookie', controllers.jwCheckCode.getPicAndCookie)
+// 已有Cookies，获取验证码图片
+router.get('/jw_check_code', controllers.jwCheckCode.getPic)
 
 module.exports = router
