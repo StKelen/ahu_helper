@@ -44,5 +44,9 @@ router.get('/bath_info', controllers.bathInfo)
 router.get('/jw_check_code_cookie', controllers.jwCheckCode.getPicAndCookie)
 // 已有Cookies，获取验证码图片
 router.get('/jw_check_code', controllers.jwCheckCode.getPic)
+// 获取课程表
+router.get('/time_table', controllers.getTimeTable)
+// 获取今天的周数
+router.get('/get_week', controllers.getWeek)
 
 module.exports = router

@@ -1,4 +1,4 @@
-const {mysql} = require('../qcloud')
+const { mysql } = require('../qcloud')
 
 // 该模块用于通过OpenID获取支付系统凭据路由
 module.exports = async openId => {

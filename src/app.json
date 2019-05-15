@@ -26,15 +26,15 @@
       "iconPath": "static/images/menu.png",
       "selectedIconPath": "static/images/menu-sel.png"
     },{
-      "pagePath": "pages/person/main",
-      "text": "个人中心",
-      "iconPath": "static/images/person.png",
-      "selectedIconPath": "static/images/person-sel.png"
-    },{
       "pagePath":"pages/timeTable/main",
       "text": "课程表",
       "iconPath":"static/images/time.png",
       "selectedIconPath":"static/images/time-sel.png"
+    },{
+      "pagePath": "pages/person/main",
+      "text": "个人中心",
+      "iconPath": "static/images/person.png",
+      "selectedIconPath": "static/images/person-sel.png"
     }]
   }
 }

@@ -10,7 +10,7 @@ module.exports = async ctx => {
     const openId = ctx.query['open_id']
     // 通过用户的OpenID获取支付系统认证
     const cookies = await getCookies(openId)
-    // 获取支付先关请求
+    // 获取支付相关请求
     const formValues = await makeForms(ctx.query['id'])
     console.log(formValues)
 

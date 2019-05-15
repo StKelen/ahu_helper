@@ -61,7 +61,8 @@ const CONF = {
     // 教务系统相关配置
     jwUrl: 'http://jw2.ahu.cn',
     jwCheckImage: 'http://jw2.ahu.cn/CheckCode.aspx',
-    jwLoginUrl: 'http://jw2.ahu.cn/default2.aspx'
+    jwLoginUrl: 'http://jw2.ahu.cn/default2.aspx',
+    jwTableUrl: 'http://jw2.ahu.cn/xskbcx.aspx'
 }
 
 module.exports = CONF

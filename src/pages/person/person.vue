@@ -117,7 +117,7 @@ export default {
             this.jwCheckCodeUrl = 'data:image/png;base64,' + data.data
             wx.hideLoading()
         },
-        onLogin () {
+        async onLogin () {
             if (!this.studyNumber || this.studyNumber === '') {
                 wx.showToast({
                     title: '请输入学号',
@@ -148,7 +148,7 @@ export default {
             wx.showLoading({ title: '登录中' })
             login.setLoginUrl(config.loginUrl)
             login.login({
-                success: (userInfo) => {
+                success: async (userInfo) => {
                     this.userInfo = userInfo
                     wx.setStorageSync('userInfo', userInfo)
                     wx.showToast({
@@ -157,6 +157,8 @@ export default {
                         image: '/static/images/success.png',
                         mask: true
                     })
+                    const classListData = await get(`/weapp/time_table?open_id=${userInfo.openId}&sno=${userInfo.sno}&sname=${userInfo.sname}`)
+                    wx.setStorageSync('classList', classListData.data)
                 },
                 fail: (err) => {
                     wx.showToast({

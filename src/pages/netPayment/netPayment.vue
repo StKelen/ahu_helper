@@ -137,10 +137,10 @@ export default {
         this.id = this.$root.$mp.query.id
         this.imageUrl = this.$root.$mp.query.imageUrl
         this.title = this.$root.$mp.query.title
-        this.getNetInfo()
     },
     onLoad () {
         Object.assign(this.$data, this.$options.data())
+        this.getNetInfo()
     },
     onShow () {
         userValid()
