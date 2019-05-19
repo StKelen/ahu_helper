@@ -2,24 +2,30 @@ import config from '../config'
 
 export async function get (url) {
     let returnData
-    try {
-        returnData = await new Promise((resolve, reject) => {
-            wx.request({
-                url: config.host + url,
-                success: function (res) {
-                    if (res && res.data) {
-                        resolve(res.data)
-                    } else {
-                        reject(new Error('网络连接失败'))
+    let timer = 0
+    let isSuccess = false
+    while (!isSuccess && timer < 5) {
+        try {
+            returnData = await new Promise((resolve, reject) => {
+                wx.request({
+                    url: config.host + url,
+                    success: function (res) {
+                        if (res && res.statusCode === 200 && res.data) {
+                            resolve(res.data)
+                            isSuccess = true
+                        } else {
+                            reject(new Error('网络连接失败'))
+                        }
+                    },
+                    fail: function () {
+                        resolve(new Error('网络连接失败'))
                     }
-                },
-                fail: function () {
-                    resolve(new Error('网络连接失败'))
-                }
+                })
             })
-        })
-    } catch (e) {
-        returnData = new Error('网络连接失败')
+        } catch (e) {
+            returnData = new Error('网络连接失败')
+        }
+        timer++
     }
     if (returnData instanceof Error) {
         wx.showToast({
@@ -46,22 +52,28 @@ export async function get (url) {
 
 export async function post (url, data) {
     let returnData
-    try {
-        returnData = await new Promise((resolve, reject) => {
-            wx.request({
-                url: config.host + url,
-                method: 'POST',
-                data,
-                complete: function (res) {
-                    if (res && res.data) {
-                        resolve(res.data)
+    let timer = 0
+    let isSuccess = false
+    while (!isSuccess && timer < 5) {
+        try {
+            returnData = await new Promise((resolve, reject) => {
+                wx.request({
+                    url: config.host + url,
+                    method: 'POST',
+                    data,
+                    complete: function (res) {
+                        if (res && res.statusCode === 200 && res.data) {
+                            resolve(res.data)
+                            isSuccess = true
+                        }
+                        reject(new Error('网络连接失败'))
                     }
-                    reject(new Error('网络连接失败'))
-                }
+                })
             })
-        })
-    } catch (e) {
-        returnData = new Error('网络连接失败')
+        } catch (e) {
+            returnData = new Error('网络连接失败')
+        }
+        timer++
     }
     if (returnData instanceof Error) {
         wx.showToast({

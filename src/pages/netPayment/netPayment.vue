@@ -70,7 +70,7 @@ export default {
     },
     data () {
         return {
-            id: '',
+            id: 4,
             imageUrl: '',
             title: '',
             priceList: [
@@ -133,19 +133,16 @@ export default {
             payMethodString: '请选择'
         }
     },
-    mounted () {
+    onLoad () {
+        Object.assign(this.$data, this.$options.data())
         this.id = this.$root.$mp.query.id
         this.imageUrl = this.$root.$mp.query.imageUrl
         this.title = this.$root.$mp.query.title
     },
-    onLoad () {
-        Object.assign(this.$data, this.$options.data())
-        this.getNetInfo()
-    },
-    onShow () {
-        userValid()
+    async onShow () {
+        await userValid()
         wx.showLoading({ title: '加载中' })
-        this.getNetInfo()
+        await this.getNetInfo()
         wx.hideLoading()
     },
     methods: {
@@ -154,7 +151,6 @@ export default {
             this.netInfo = (await get(
                 '/weapp/get_net_info' + `?open_id=${openId}&id=${this.id}`
             )).data
-            console.log(this.netInfo)
         },
         onSelect (index, price) {
             this.paymentInfo.tran = parseFloat(price) * 100

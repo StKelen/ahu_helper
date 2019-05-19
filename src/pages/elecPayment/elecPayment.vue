@@ -147,10 +147,10 @@ export default {
         this.imageUrl = this.$root.$mp.query.imageUrl
         this.title = this.$root.$mp.query.title
     },
-    onShow () {
-        userValid()
+    async onShow () {
+        await userValid()
         wx.showLoading({ title: '加载中' })
-        this.getRoomInfo()
+        await this.getRoomInfo()
         wx.hideLoading()
     },
     methods: {

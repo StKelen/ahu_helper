@@ -63,6 +63,8 @@ export default {
         }
     },
     async onLoad () {
+        Object.assign(this.$data, this.$options.data())
+        wx.showLoading({ title: '加载中' })
         this.maleUrl = `${config.bathUrl}/man.png`
         this.femaleUrl = `${config.bathUrl}/woman.png`
         const toDate = new Date()
@@ -72,6 +74,7 @@ export default {
         this.morrowDay = morrowDate.getDate()
         this.morrowMonth = morrowDate.getMonth() + 1
         await this.getBathInfo()
+        wx.hideLoading()
     },
     methods: {
         async getBathInfo () {

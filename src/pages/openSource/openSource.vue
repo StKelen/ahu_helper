@@ -19,7 +19,7 @@ import config from '@/config'
 export default {
     data () {
         return {
-            logoUrl: `${config.personUrl}arcode.png`,
+            logoUrl: `${config.personUrl}/arcode.png`,
             sourceList: [{
                 name: 'mpvue',
                 author: '美团点评',

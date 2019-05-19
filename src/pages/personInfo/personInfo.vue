@@ -22,33 +22,22 @@ export default {
     data () {
         return {
             userInfo: {
-                avatarUrl: `${config.personUrl}avatar.png`
+                avatarUrl: `${config.personUrl}/avatar.png`
             },
             studentInfo: {}
         }
     },
     methods: {
-        getUserInfo () {
-            const userInfo = wx.getStorageSync('userInfo')
-            if (userInfo.openId) {
-                this.userInfo = userInfo
-            } else {
-                this.userInfo = {
-                    avatarUrl: `${config.personUrl}avatar.png`
-                }
-            }
-        },
         async getStudentInfo () {
-            const openId = wx.getStorageSync('userInfo').openId
+            const userInfo = wx.getStorageSync('userInfo')
+            this.userInfo = userInfo
+            const openId = userInfo.openId
             this.studentInfo = (await get(
                 '/weapp/user_info' + `?open_id=${openId}&id=${this.id}`
             )).data
         }
     },
-    onShow () {
-        this.getUserInfo()
-    },
-    async mounted () {
+    async onLoad () {
         wx.showLoading({ title: '加载中' })
         await this.getStudentInfo()
         wx.hideLoading()

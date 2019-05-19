@@ -18,7 +18,7 @@ import config from '@/config'
 export default {
     data () {
         return {
-            logoUrl: `${config.personUrl}arcode.png`
+            logoUrl: `${config.personUrl}/arcode.png`
         }
     }
 }

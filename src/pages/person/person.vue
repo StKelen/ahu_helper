@@ -95,18 +95,18 @@ export default {
     },
     methods: {
         async getPicAndCookie () {
-            wx.showLoading({ title: '加载中' })
             if (this.canUse) {
-                const data = (await get('/weapp/get_check_code_cookie')).data
+                const payData = await get('/weapp/get_check_code_cookie')
+                const data = payData.data
                 this.checkCodeUrl = 'data:image/png;base64,' + data.image
                 this.cookie = data.cookie
             }
-            const jwData = (await get('/weapp/jw_check_code_cookie')).data
-            this.jwCheckCodeUrl = 'data:image/png;base64,' + jwData.jwImg
-            this.jwCookie = jwData.cookie
-            this.viewState = jwData.viewState
-            this.viewStateGenerator = jwData.viewStateGenerator
-            wx.hideLoading()
+            const jwData = await get('/weapp/jw_check_code_cookie')
+            const jwInfo = jwData.data
+            this.jwCheckCodeUrl = 'data:image/png;base64,' + jwInfo.jwImg
+            this.jwCookie = jwInfo.cookie
+            this.viewState = jwInfo.viewState
+            this.viewStateGenerator = jwInfo.viewStateGenerator
         },
         async getPic () {
             wx.showLoading({ title: '加载中' })
@@ -214,8 +214,15 @@ export default {
                 viewStateGenerator: this.viewStateGenerator
             })
         },
-        getUserInfo () {
-            const userInfo = wx.getStorageSync('userInfo')
+        async getUserInfo () {
+            let userInfo
+            try {
+                userInfo = wx.getStorageSync('userInfo')
+            } catch (e) {
+                this.userInfo = {
+                    avatarUrl: `${config.personUrl}/avatar.png`
+                }
+            }
             if (userInfo.openId) {
                 this.userInfo = userInfo
             } else {
@@ -248,12 +255,14 @@ export default {
             this.getPicAndCookie()
         }
     },
-    onShow () {
-        this.canIuse()
-        this.getUserInfo()
+    async onShow () {
+        wx.showLoading({ title: '加载中' })
+        await this.canIuse()
+        await this.getUserInfo()
         if (!this.userInfo.openId) {
-            this.getPicAndCookie()
+            await this.getPicAndCookie()
         }
+        wx.hideLoading()
         this.notice = this.$root.$mp.query.notice
         if (this.notice) {
             wx.showToast({

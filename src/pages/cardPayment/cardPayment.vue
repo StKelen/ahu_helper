@@ -73,7 +73,7 @@ export default {
     },
     data () {
         return {
-            id: '',
+            id: 1,
             imageUrl: '',
             title: '',
             priceList: [
@@ -137,18 +137,16 @@ export default {
             payTargetString: '请选择'
         }
     },
-    mounted () {
+    onLoad () {
+        Object.assign(this.$data, this.$options.data())
         this.id = this.$root.$mp.query.id
         this.imageUrl = this.$root.$mp.query.imageUrl
         this.title = this.$root.$mp.query.title
     },
-    onLoad () {
-        Object.assign(this.$data, this.$options.data())
-    },
-    onShow () {
-        userValid()
+    async onShow () {
+        await userValid()
         wx.showLoading({ title: '加载中' })
-        this.getCardInfo()
+        await this.getCardInfo()
         wx.hideLoading()
     },
     methods: {

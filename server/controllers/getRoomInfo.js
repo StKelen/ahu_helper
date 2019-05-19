@@ -12,7 +12,6 @@ module.exports = async ctx => {
     const cookies = await getCookies(openId)
     // 获取支付相关请求
     const formValues = await makeForms(ctx.query['id'])
-    console.log(formValues)
 
     // 获取支付页面信息
     const pageData = await getRoomPage(cookies, formValues)

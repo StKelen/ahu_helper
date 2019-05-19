@@ -67,8 +67,10 @@ export default {
             this.searchWord = e.mp.detail.value
         }
     },
-    onLoad () {
-        this.getPassingList()
+    async onLoad () {
+        wx.showLoading({ title: '加载中' })
+        await this.getPassingList()
+        wx.hideLoading()
     },
     watch: {
         searchWord (val) {
@@ -76,7 +78,6 @@ export default {
             this.showLessonList = []
             let regStr = this.searchWord.replace(/(.{1})/g, '.*$1')
             regStr += '.*'
-            console.log(regStr)
             const RegObj = new RegExp(regStr, 'g')
             this.lessonList.forEach(item => {
                 if (RegObj.test(item.name)) this.showLessonList.push(item)

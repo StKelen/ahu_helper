@@ -48,18 +48,21 @@ export default {
             isShowDetail: false
         }
     },
-    onShow () {
-        this.getClassList()
-    },
-    async onLoad () {
+    async onShow () {
+        wx.showLoading({ title: '加载中' })
         await this.getTodayWeek()
+        wx.hideLoading()
+        await this.getClassList()
     },
     methods: {
-        getClassList () {
+        async getClassList () {
+            wx.showLoading({ title: '加载中' })
             try {
                 this.classList = wx.getStorageSync('classList')
+                wx.hideLoading()
                 if (this.classList.length === 0) throw new Error('没有获取到课程信息')
             } catch (e) {
+                wx.hideLoading()
                 wx.showToast({
                     title: '请登录',
                     icon: 'none',
@@ -73,7 +76,6 @@ export default {
         },
         showDetail (lesson) {
             this.isShowDetail = true
-            console.log(this.isShowDetail)
             this.selectLesson = lesson
         },
         toogleDetailVisible () {
