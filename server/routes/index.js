@@ -5,16 +5,25 @@ const router = require('koa-router')({
     prefix: '/weapp'
 })
 const controllers = require('../controllers')
+const config = require('../config')
 
 // 从 sdk 中取出中间件
 // 这里展示如何使用 Koa 中间件完成登录态的颁发与验证
-const { auth: { authorizationMiddleware } } = require('../qcloud')
+const {
+    auth: {
+        authorizationMiddleware
+    }
+} = require('../qcloud')
 // 支付系统登录中间件
 const hallLogin = require('../middlewares/login')
 const jwLogin = require('../middlewares/jwLogin')
 
 // 登录接口
-router.get('/login', jwLogin, hallLogin, authorizationMiddleware, controllers.login)
+if (config.canIPay) {
+    router.get('/login', jwLogin, hallLogin, authorizationMiddleware, controllers.login)
+} else {
+    router.get('/login', jwLogin, authorizationMiddleware, controllers.login)
+}
 
 // 主页路由
 router.get('/index_list', controllers.indexList)
@@ -22,6 +31,8 @@ router.get('/index_list', controllers.indexList)
 router.get('/get_check_code_cookie', controllers.getCheckCode.getPicWithoutCookie)
 // 获取验证码图片路由
 router.get('/get_check_code', controllers.getCheckCode.getPicWithCookie)
+// 是否启动支付相关功能接口
+router.get('/is_open', controllers.isOpen)
 // 获取卡片支付信息路由
 router.get('/get_card_info', controllers.getCardInfo)
 // 发起校园卡支付请求路由
@@ -48,5 +59,6 @@ router.get('/jw_check_code', controllers.jwCheckCode.getPic)
 router.get('/time_table', controllers.getTimeTable)
 // 获取今天的周数
 router.get('/get_week', controllers.getWeek)
+router.get('/passing_list', controllers.passingList)
 
 module.exports = router

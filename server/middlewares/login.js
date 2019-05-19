@@ -27,8 +27,18 @@ module.exports = async (ctx, next) => {
         uclass: 1,
         json: true
     }
+    let returnData
     // 向支付系统发起登陆请求
-    const returnData = await sendLoginRequsetPromise(headers, loginData)
+    try {
+        returnData = await sendLoginRequsetPromise(headers, loginData)
+    } catch (e) {
+        ctx.state = {
+            'code': -2,
+            'data': {
+                'desc': '服务器连接失败'
+            }
+        }
+    }
     // 验证是否登陆成功
     if (JSON.parse(returnData.text).IsSucceed) {
     // 获取用户所有的登陆凭证并将存储于数据库中
@@ -61,12 +71,13 @@ function sendLoginRequsetPromise (headers, loginData) {
             .send(loginData)
             .withCredentials()
             .end((err, result) => {
-                if (err) reject(err)
+                if (err) reject(new Error(err))
                 resolve(result)
             })
     })
 }
 
+// 该函数用于向数据库中插入用户的教务系统cookies
 async function updateUserInfo (openId, cookies) {
     await mysql('cSessionInfo').where('open_id', '=', openId).update({
         cookies

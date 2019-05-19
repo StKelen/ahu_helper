@@ -8,7 +8,7 @@
                 <div class="input-area">
                     <input @input="getStudyNumber" id="study-number" placeholder="学号" type="text">
                 </div>
-                <div class="input-area">
+                <div class="input-area" v-if="canUse">
                     <input
                         @input="getPassword"
                         id="password"
@@ -26,7 +26,7 @@
                         type="text"
                     >
                 </div>
-                <div class="input-area">
+                <div class="input-area" v-if="canUse">
                     <input
                         @input="getSerialNumber"
                         id="serial-number"
@@ -89,15 +89,18 @@ export default {
             serialNumber: '',
             viewState: '',
             viewStateGenerator: '',
-            notice: ''
+            notice: '',
+            canUse: false
         }
     },
     methods: {
         async getPicAndCookie () {
             wx.showLoading({ title: '加载中' })
-            const data = (await get('/weapp/get_check_code_cookie')).data
-            this.checkCodeUrl = 'data:image/png;base64,' + data.image
-            this.cookie = data.cookie
+            if (this.canUse) {
+                const data = (await get('/weapp/get_check_code_cookie')).data
+                this.checkCodeUrl = 'data:image/png;base64,' + data.image
+                this.cookie = data.cookie
+            }
             const jwData = (await get('/weapp/jw_check_code_cookie')).data
             this.jwCheckCodeUrl = 'data:image/png;base64,' + jwData.jwImg
             this.jwCookie = jwData.cookie
@@ -117,7 +120,35 @@ export default {
             this.jwCheckCodeUrl = 'data:image/png;base64,' + data.data
             wx.hideLoading()
         },
+        async canIuse () {
+            try {
+                this.canUse = wx.getStorageSync('isOpen')
+            } catch (e) {
+                const isOpen = await get('/weapp/is_open')
+                this.canUse = isOpen.data
+            }
+        },
         async onLogin () {
+            if (this.canUse) {
+                if (!this.password || this.password === '') {
+                    wx.showToast({
+                        title: '请输入密码',
+                        icon: 'none',
+                        image: '/static/images/warning.png',
+                        mask: true
+                    })
+                    return
+                }
+                if (!this.serialNumber || this.serialNumber === '') {
+                    wx.showToast({
+                        title: '请输入验证码',
+                        icon: 'none',
+                        image: '/static/images/warning.png',
+                        mask: true
+                    })
+                    return
+                }
+            }
             if (!this.studyNumber || this.studyNumber === '') {
                 wx.showToast({
                     title: '请输入学号',
@@ -127,18 +158,18 @@ export default {
                 })
                 return
             }
-            if (!this.password || this.password === '') {
+            if (!this.jwPassword || this.jwPassword === '') {
                 wx.showToast({
-                    title: '请输入密码',
+                    title: '请输入教务密码',
                     icon: 'none',
                     image: '/static/images/warning.png',
                     mask: true
                 })
                 return
             }
-            if (!this.serialNumber || this.serialNumber === '') {
+            if (!this.jwSerialNumber || this.jwSerialNumber === '') {
                 wx.showToast({
-                    title: '请输入验证码',
+                    title: '请输入教务密码',
                     icon: 'none',
                     image: '/static/images/warning.png',
                     mask: true
@@ -149,6 +180,7 @@ export default {
             login.setLoginUrl(config.loginUrl)
             login.login({
                 success: async (userInfo) => {
+                    wx.hideLoading()
                     this.userInfo = userInfo
                     wx.setStorageSync('userInfo', userInfo)
                     wx.showToast({
@@ -161,17 +193,15 @@ export default {
                     wx.setStorageSync('classList', classListData.data)
                 },
                 fail: (err) => {
+                    wx.hideLoading()
+                    if (this.canUse) this.getPic()
+                    this.getJwPic()
                     wx.showToast({
                         title: err,
                         icon: 'none',
                         image: '/static/images/warning.png',
                         mask: true
                     })
-                    this.getPic()
-                    this.getJwPic()
-                },
-                complete: function () {
-                    wx.hideLoading()
                 },
                 studyNumber: this.studyNumber,
                 password: this.password,
@@ -218,10 +248,9 @@ export default {
             this.getPicAndCookie()
         }
     },
-    // onLoad () {
-    //     this.getUserInfo()
-    // },
-    mounted () {
+    onShow () {
+        this.canIuse()
+        this.getUserInfo()
         if (!this.userInfo.openId) {
             this.getPicAndCookie()
         }
@@ -234,9 +263,6 @@ export default {
                 mask: true
             })
         }
-    },
-    onShow () {
-        this.getUserInfo()
     }
 }
 </script>

@@ -48,19 +48,22 @@ export default {
             isShowDetail: false
         }
     },
-    onLoad () {
+    onShow () {
         this.getClassList()
-        this.getTodayWeek()
+    },
+    async onLoad () {
+        await this.getTodayWeek()
     },
     methods: {
         getClassList () {
             try {
                 this.classList = wx.getStorageSync('classList')
+                if (this.classList.length === 0) throw new Error('没有获取到课程信息')
             } catch (e) {
                 wx.showToast({
                     title: '请登录',
                     icon: 'none',
-                    image: '/static/images/warning.png',
+                    image: '/static/images/info.png',
                     mask: true
                 })
             }

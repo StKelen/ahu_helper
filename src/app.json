@@ -9,7 +9,8 @@
     "pages/personInfo/main",
     "pages/about/main",
     "pages/openSource/main",
-    "pages/bath/main"
+    "pages/bath/main",
+    "pages/passing/main"
   ],
   "window": {
     "backgroundTextStyle": "light",

@@ -7,7 +7,7 @@ export async function get (url) {
             wx.request({
                 url: config.host + url,
                 success: function (res) {
-                    if (res || res.data) {
+                    if (res && res.data) {
                         resolve(res.data)
                     } else {
                         reject(new Error('网络连接失败'))
@@ -53,7 +53,7 @@ export async function post (url, data) {
                 method: 'POST',
                 data,
                 complete: function (res) {
-                    if (res || res.data) {
+                    if (res && res.data) {
                         resolve(res.data)
                     }
                     reject(new Error('网络连接失败'))

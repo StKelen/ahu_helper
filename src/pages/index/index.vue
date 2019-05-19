@@ -22,7 +22,8 @@ export default {
     },
     data () {
         return {
-            cardList: []
+            cardList: [],
+            isOpen: false
         }
     },
     methods: {
@@ -40,14 +41,21 @@ export default {
             if (id === 2 || id === 3) return '/pages/elecPayment/main?id=' + id + '&imageUrl=' + imageUrl + '&title=' + title
             if (id === 4) return '/pages/netPayment/main?id=' + id + '&imageUrl=' + imageUrl + '&title=' + title
             if (id === 5) return '/pages/bath/main'
+            if (id === 6) return '/pages/passing/main'
         },
         toogleNotice () {
             this.noticeVisible = !this.noticeVisible
+        },
+        async canIuse () {
+            const canUse = await get('/weapp/is_open')
+            this.isOpen = canUse.data
+            wx.setStorageSync('isOpen', canUse.data)
         }
     },
-    mounted () {
+    async onLoad () {
         wx.showLoading({ title: '加载中' })
-        this.getList()
+        await this.canIuse()
+        await this.getList()
         wx.hideLoading()
     }
 }
