@@ -1,10 +1,14 @@
+// 该页面为挂科率查询页面
 <template>
     <div>
+        <!-- 顶部搜索框 -->
         <div class="search">
             <input @input="getSearchWord" id="search" placeholder="搜索课程" type="text">
-            <img :src="checkCodeUrl" @click="getPic" alt="验证码">
+            <img alt="搜索">
         </div>
+        <!-- 挂科率列表循环 -->
         <ul>
+            <!-- 循环要显示的课程列表进行渲染 -->
             <li :key="index" v-for="(item, index) in showLessonList">
                 <div class="list">
                     <span class="info">课程：</span>
@@ -52,17 +56,22 @@ import { get } from '@/utils/util'
 export default {
     data () {
         return {
+            // 从服务器获取的所有课程的挂科率
             lessonList: [],
+            // 要显示的课程
             showLessonList: [],
+            // 搜索词
             searchWord: ''
         }
     },
     methods: {
+        // 获取所有课程列表
         async getPassingList () {
             const lessonListData = await get('/weapp/passing_list')
             this.lessonList = lessonListData.data
             this.showLessonList = lessonListData.data
         },
+        // 获取梭梭词语
         getSearchWord (e) {
             this.searchWord = e.mp.detail.value
         }
@@ -73,12 +82,16 @@ export default {
         wx.hideLoading()
     },
     watch: {
+        // 判断搜索词是否有更新。如果有，更新显示列表
         searchWord (val) {
             if (!val || val === '') this.showLessonList = this.lessonList
             this.showLessonList = []
+            // 对搜索词进行模糊查询
+            // 例如输入“马基”会被替换正则表达式 /*马*基*/g
             let regStr = this.searchWord.replace(/(.{1})/g, '.*$1')
             regStr += '.*'
             const RegObj = new RegExp(regStr, 'g')
+            // 对课程列表每一项进行判断，如果符合正则表达式，则推入要显示的数组
             this.lessonList.forEach(item => {
                 if (RegObj.test(item.name)) this.showLessonList.push(item)
             })
@@ -88,6 +101,7 @@ export default {
 </script>
 
 <style scoped>
+/* 顶部搜索框相关样式 */
 .search {
     position: fixed;
     top: 0;
@@ -111,6 +125,7 @@ export default {
     border-radius: 40rpx;
     background-image: url('../../../static/images/search.png');
 }
+/* 课程列表信息样式 */
 li {
     width: 650rpx;
     margin: 15rpx auto 30rpx auto;

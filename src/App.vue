@@ -1,5 +1,4 @@
 <script>
-// import {get} from './util'
 
 export default {
 }

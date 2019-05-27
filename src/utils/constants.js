@@ -1,3 +1,4 @@
+// 登录相关提示常量，由wafer默认生成
 module.exports = {
     WX_HEADER_CODE: 'X-WX-Code',
     WX_HEADER_ENCRYPTED_DATA: 'X-WX-Encrypted-Data',

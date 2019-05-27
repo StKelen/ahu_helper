@@ -1,5 +1,8 @@
+// 寝室电费支付界面
 <template>
-    <div>
+    <!-- 判断是否可用 -->
+    <div v-if="canUse">
+        <!-- 顶部装饰 -->
         <div id="header">
             <div id="wrap-out">
                 <div id="img-wrap-in">
@@ -8,14 +11,19 @@
                 <p>{{title}}</p>
             </div>
         </div>
+        <!-- 顶部装饰下面的阴影 -->
         <div id="transprancy"></div>
+        <!-- 下面支付功能的滚动页面 -->
         <scroll-view scroll-y="true" style="height: 70vh; z-index: 0; margin-top: 30vh;">
             <div style="height: 60vh; padding-top: 10vh;">
+                <!-- 支付金额部分 -->
                 <div class="card">
+                    <!-- 顶部标题 -->
                     <div class="title">
-                        充值金额
-                        <span>（单位：元）</span>
+                        &#x5145;&#x503C;&#x91D1;&#x989D;
+                        <span>&#xFF08;&#x5355;&#x4F4D;&#xFF1A;&#x5143;&#xFF09;</span>
                     </div>
+                    <!-- 支付金额组件，分别绑定是否选中、是否自定义、循环项数、价格、选中相关事件 -->
                     <div class="content">
                         <price-option
                             :checked="item.checked"
@@ -28,10 +36,12 @@
                         ></price-option>
                     </div>
                 </div>
+                <!-- 充值目标部分 -->
                 <div class="card">
                     <div class="title">充值目标</div>
                     <div>
                         <span class="select-info">楼栋</span>
+                        <!-- 设置遮罩层是否显示，传入相关数据 -->
                         <span
                             @click="modalChoose('楼　栋', roomInfo.buildingsList, 'building', buildingChooseResult)"
                             class="select-content"
@@ -39,13 +49,16 @@
                     </div>
                     <div>
                         <span class="select-info">房间号</span>
+                        <!-- 房间号的输入 -->
                         <input @input="getRoomId" class="input-content" type="text">
                     </div>
                 </div>
+                <!-- 支付方式部分 -->
                 <div class="card">
                     <div class="title">支付方式</div>
                     <div>
                         <span class="select-info">支付方式</span>
+                        <!-- 设置遮罩层是否显示，传入相关数据 -->
                         <span
                             @click="modalChoose('支付方式', roomInfo.payList, 'name', methodChooseResult)"
                             class="select-content"
@@ -53,6 +66,7 @@
                     </div>
                 </div>
                 <button @click="roomPayment">充值!</button>
+                <!-- 遮罩层，绑定选择列表、展示文字的对象属性名称、题目、是否课件、选择结果、开关显示 -->
                 <modal
                     :list="modalList"
                     :showKey="modalShowKey"
@@ -71,15 +85,22 @@ import PriceOption from '@/components/PriceOption.vue'
 import Modal from '@/components/Modal.vue'
 import { get, post, userValid } from '@/utils/util'
 export default {
+    // 价格选择组件和遮罩组件
     components: {
         PriceOption,
         Modal
     },
     data () {
         return {
+            // 是否可用
+            canUse: false,
+            // 当前支付类型的顺序
             id: '',
+            // 顶部装饰的图片链接
             imageUrl: '',
+            // 顶部装饰的介绍文字
             title: '',
+            // 支付价格数组，和价格选择组件相关
             priceList: [
                 {
                     index: 1,
@@ -130,38 +151,65 @@ export default {
                     custom: true
                 }
             ],
+            // 遮罩层相关数据
             modalVisible: false,
             modalList: [],
             modalTitle: '',
             modalShowKey: '',
+            // 遮罩层选择相关数据后出发的函数
             resultMethod: function () { },
+            // 个人支付信息
             roomInfo: {},
+            // 支付请求相关参数
             paymentInfo: {},
+            // 在前端界面的显示文字
             payMethodString: '请选择',
             targetBuildingString: '请选择'
         }
     },
     onLoad () {
+        // 加载时初始化数据
         Object.assign(this.$data, this.$options.data())
+        // 传入相关页面数据
         this.id = this.$root.$mp.query.id
         this.imageUrl = this.$root.$mp.query.imageUrl
         this.title = this.$root.$mp.query.title
+        // 判断是否可用
+        this.canIuse()
     },
     async onShow () {
-        await userValid()
-        wx.showLoading({ title: '加载中' })
-        await this.getRoomInfo()
-        wx.hideLoading()
+        // 获取用户个人支付信息
+        if (this.canUse) {
+            await userValid()
+            wx.showLoading({ title: '加载中' })
+            await this.getRoomInfo()
+            wx.hideLoading()
+        }
     },
     methods: {
+        // 判断是否可用，优先从本地存储中获取数据
+        async canIuse () {
+            wx.showLoading({ title: '加载中' })
+            try {
+                this.canUse = wx.getStorageSync('isOpen')
+            } catch (e) {
+                const isOpen = await get('/weapp/is_open')
+                this.canUse = isOpen.data
+            }
+            wx.hideLoading()
+        },
+        // 获取用户个人支付信息
         async getRoomInfo () {
             const openId = wx.getStorageSync('userInfo').openId
             this.roomInfo = (await get(
                 '/weapp/get_room_info' + `?open_id=${openId}&id=${this.id}`
             )).data
         },
+        // 与价格选择组件一起，执行选择后参数处理
         onSelect (index, price) {
+            // 获取价格，学校支付系统以分为单位
             this.paymentInfo.tran = parseFloat(price) * 100
+            // 设置是否被选中的处理，影响样式
             this.priceList.map((item, i) => {
                 item.checked =
                     index === i + 1 &&
@@ -169,6 +217,7 @@ export default {
                 return item
             })
         },
+        // 控制遮罩相关数据
         modalChoose (title, list, showKey, resultMethod) {
             this.modalTitle = title
             this.modalList = list
@@ -176,28 +225,33 @@ export default {
             this.modalShowKey = showKey
             this.modalVisible = true
         },
+        // 开关遮罩层显示
         toogleVisible () {
             this.modalVisible = !this.modalVisible
         },
+        // 设置支付目标的遮罩参数
         buildingChooseResult (index) {
             this.paymentInfo.buildingid = this.roomInfo.buildingsList[index].buildingid
             this.paymentInfo.building = this.roomInfo.buildingsList[index].building
             this.targetBuildingString = this.paymentInfo.building
             this.toogleVisible()
         },
+        // 设置支付方式的遮罩参数
         methodChooseResult (index) {
-            // 注意这里是对象，要获取值，用value
             this.paymentInfo.paytype = this.roomInfo.payList[index].paytype
             this.payMethodString = this.roomInfo.payList[index].name
             if (this.paymentInfo.paytype === '3') this.paymentInfo.acctype = '000'
             this.toogleVisible()
         },
+        // 获取寝室号
         getRoomId (e) {
             const roomId = parseInt(e.mp.detail.value)
             this.paymentInfo.roomid = roomId
             this.paymentInfo.room = roomId
         },
+        // 发起支付的请求
         async roomPayment () {
+            // 获取支付系统的cookies，设置相关支付数据
             this.paymentInfo.cookies = this.roomInfo.cookies
             this.paymentInfo['payment_acc'] = ''
             this.paymentInfo.aid = this.roomInfo.aid
@@ -205,6 +259,7 @@ export default {
             this.paymentInfo.floorid = ''
             this.paymentInfo.floor = ''
 
+            // 防止用户输入错误的参数，进行客户端验证
             if (!this.paymentInfo.tran || this.paymentInfo.tran === 0 || isNaN(this.paymentInfo.tran)) {
                 wx.showToast({
                     title: '充值金额错误',
@@ -242,8 +297,10 @@ export default {
                 return
             }
             wx.showLoading({ title: '支付中' })
+            // 发起支付请求
             const paymentData = await post('/weapp/room_payment', this.paymentInfo)
             wx.hideLoading()
+            // 返回支付信息
             if (paymentData.code === 0) {
                 wx.showToast({
                     title: '缴费成功',
@@ -251,6 +308,7 @@ export default {
                     image: '/static/images/success.png',
                     mask: true
                 })
+                // 支付成功后返回上一页
                 setTimeout(() => {
                     wx.navigateBack({
                         delta: 1
@@ -270,6 +328,7 @@ export default {
 </script>
 
 <style scoped>
+/* 顶部装饰 */
 #header {
     width: 100%;
     height: 40vh;
@@ -281,6 +340,7 @@ export default {
     top: 0;
     z-index: 2;
 }
+/* 顶部装饰包裹 */
 #wrap-out {
     position: relative;
     height: 0;
@@ -289,6 +349,7 @@ export default {
     padding-bottom: 50%;
     top: 5vh;
 }
+/* 顶部图片包裹 */
 #img-wrap-in {
     position: absolute;
     left: 0;
@@ -297,11 +358,13 @@ export default {
     bottom: 0;
     box-sizing: border-box;
 }
+/* 顶部装饰图片宽高设定 */
 #header-image {
     display: block;
     height: 60%;
     width: 100%;
 }
+/* 顶部装饰文字介绍 */
 #header p {
     position: absolute;
     left: 0;
@@ -311,6 +374,7 @@ export default {
     font-size: 48rpx;
     color: #444;
 }
+/* 顶部装饰文字旁的装饰线 */
 #header p::before,
 p::after {
     display: inline-block;
@@ -329,6 +393,7 @@ p::after {
     margin-left: 30rpx;
 }
 
+/* 顶部装饰下方阴影 */
 #transprancy {
     position: fixed;
     height: 14vh;
@@ -341,9 +406,9 @@ p::after {
         rgba(244, 247, 252, 0) 100%
     );
     z-index: 1;
-    /* 244 247 252 */
 }
 
+/* 单个卡片样式 */
 .card {
     width: 700rpx;
     margin: 15rpx auto 30rpx auto;
@@ -353,6 +418,7 @@ p::after {
     box-shadow: 0 0 40rpx 30rpx rgba(225, 225, 225, 0.2),
         0 20rpx 40rpx 0rpx rgba(0, 0, 0, 0.15);
 }
+/* 卡片下多个列表样式 */
 .card > div {
     border-bottom: 1rpx solid #ccc;
 }
@@ -360,6 +426,7 @@ p::after {
 .card > div:last-child {
     border-bottom: none;
 }
+/* 卡片的标题 */
 .title {
     padding-bottom: 10rpx;
     padding-left: 30rpx;
@@ -372,12 +439,14 @@ p::after {
     font-size: 24rpx;
     padding-left: 20rpx;
 }
+/* 多个付款选项布局 */
 .content {
     display: flex;
     flex-flow: row wrap;
     justify-content: space-between;
     z-index: 0;
 }
+/* 选择列样式 */
 .select-info {
     display: inline-block;
     font-size: 36rpx;
@@ -397,6 +466,7 @@ p::after {
     margin-left: 50rpx;
     color: #666;
 }
+/* 输入框样式 */
 .input-content {
     display: inline-block;
     position: relative;
@@ -410,6 +480,7 @@ p::after {
     border: 3rpx solid #ccc;
     border-radius: 3rpx;
 }
+/* 右边装饰箭头 */
 .select-content::after {
     content: '';
     float: right;
@@ -421,6 +492,7 @@ p::after {
     height: 40rpx;
     background-size: 40rpx 40rpx;
 }
+/* 支付按钮相关样式 */
 button {
     width: 550rpx;
     height: 100rpx;

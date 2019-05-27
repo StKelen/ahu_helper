@@ -1,12 +1,14 @@
+// 关于小程序界面
 <template>
     <div>
+        <!-- 小程序Logo -->
         <div class="logo">
             <img :src="logoUrl" alt="">
         </div>
+        <!-- 小程序版本号 -->
         <p id="version">1.0.0</p>
+        <!-- 相关协议 -->
         <ul class="list">
-            <!-- <a>用户协议</a>
-            <a>隐私协议</a> -->
             <a href="/pages/openSource/main">开源相关</a>
         </ul>
         <p id="copyright">Powered By 极战の窝</p>

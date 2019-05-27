@@ -1,9 +1,13 @@
+// 本页面为开源相关页面
 <template>
     <div>
+        顶部Logo
         <div class="logo">
             <img :src="logoUrl" alt="">
         </div>
+        <!-- 小程序版本 -->
         <p id="version">1.0.0</p>
+        <!-- 循环列表，列表为各开源作品 -->
         <ul class="list">
             <li v-for="(item, index) in sourceList" :key="index">
                 <span class="list-name">{{item.name}}</span>
@@ -19,7 +23,9 @@ import config from '@/config'
 export default {
     data () {
         return {
+            // 设置Logo地址
             logoUrl: `${config.personUrl}/arcode.png`,
+            // 开源相关列表。对象中name为名称，author为作者,desc为描述
             sourceList: [{
                 name: 'mpvue',
                 author: '美团点评',
@@ -59,6 +65,7 @@ export default {
 </script>
 
 <style scoped>
+/* 设置Logo相关样式 */
 .logo{
     margin-top: 50rpx;
 }
@@ -68,12 +75,14 @@ export default {
     height: 300rpx;
     margin: auto;
 }
+/* 设置版本号 */
 #version{
     margin-top: 30rpx;
     color: #999;
     font-size: 32rpx;
     text-align: center;
 }
+/* 设置开源相关列表样式 */
 .list{
     margin-top: 100rpx;
 }

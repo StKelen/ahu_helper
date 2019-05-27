@@ -25,7 +25,7 @@ module.exports = async ctx => {
     // 通过客户端请求判断是空调还是照明缴费
     const aid = ctx.query['id'] === '2' ? '0030000000001401' : '0030000000001402'
     // 通过学生账号获取所有可以选择的寝室楼栋
-    const buildingsListData = await getBuildingsListPromise(cookies, aid, studentAccount)
+    const buildingsListData = await getBuildingsList(cookies, aid, studentAccount)
     // 将获取的字符串转换为对象
     const buildingsList = parseData(buildingsListData)['query_elec_building'].buildingtab
 
@@ -56,25 +56,29 @@ async function getRoomPage (cookies, forms) {
         Connection: 'keep-alive',
         Origin: 'http://101.76.160.144'
     }
-    return await sendRequest(config.hallUrl + '/Page/Page', headers, true, forms)
+    const page = await sendRequest(config.hallUrl + '/Page/Page', headers, true, forms)
+    return page
 }
 
 // 该函数用于获取所有可以用于支付的寝室楼栋
-function getBuildingsListPromise (cookies, aid, account) {
+async function getBuildingsList (cookies, aid, account) {
     const headers = {
         Cookie: cookies,
         Connection: 'keep-alive',
         Origin: 'http://101.76.160.144',
         'X-Requested-With': 'XMLHttpRequest',
-        Referer: 'http://101.76.160.144/Page/Page'
+        Referer: 'http://101.76.160.144/Page/Page',
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36'
     }
 
     // 用于处理相关发送数据。因为支付系统的编码方式较为奇怪，所以直接使用字符串发送数据
     let data = `jsondata={ "query_elec_building": { "aid": "${aid}", "account": "${account}", "area": {"area": "", "areaname": ""  } } }&funname=synjones.onecard.query.elec.building&json=true`
     data = encodeURI(data).replace(/(%20)/g, '+')
     data = data.replace(/:/g, '%3A').replace(/,/g, '%2C')
-
-    return sendRequest(config.hallUrl + '/Tsm/TsmCommon', headers, false, data)
+    console.log(data)
+    const buildingsListData = await sendRequest(config.hallUrl + '/Tsm/TsmCommon', headers, false, data)
+    return buildingsListData
 }
 
 // 获取学生账号

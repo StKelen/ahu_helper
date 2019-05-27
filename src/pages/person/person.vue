@@ -1,13 +1,19 @@
+// 个人中心页面
 <template>
     <div class="person-page">
+        <!-- 顶部头像 -->
         <div class="avatar-content">
             <img :src="userInfo.avatarUrl" alt="头像" id="avatar">
         </div>
+        <!-- 下方个人界面 -->
         <div class="person-content">
+            <!-- 判断是否登录，如果没有，显示登陆信息 -->
             <div class="input-field" v-if="!userInfo.openId">
+                <!-- 学号 -->
                 <div class="input-area">
                     <input @input="getStudyNumber" id="study-number" placeholder="学号" type="text">
                 </div>
+                <!-- 校园卡查询密码 -->
                 <div class="input-area" v-if="canUse">
                     <input
                         @input="getPassword"
@@ -17,6 +23,7 @@
                         type="text"
                     >
                 </div>
+                <!-- 教务系统密码 -->
                 <div class="input-area">
                     <input
                         @input="getJwPassword"
@@ -26,6 +33,7 @@
                         type="text"
                     >
                 </div>
+                <!-- 支付系统验证码 -->
                 <div class="input-area" v-if="canUse">
                     <input
                         @input="getSerialNumber"
@@ -35,6 +43,7 @@
                     >
                     <img :src="checkCodeUrl" @click="getPic" alt="验证码">
                 </div>
+                <!-- 教务系统验证码 -->
                 <div class="input-area">
                     <input
                         @input="getJwSerialNumber"
@@ -44,8 +53,10 @@
                     >
                     <img :src="jwCheckCodeUrl" @click="getJwPic" alt="验证码">
                 </div>
+                <!-- 登录按钮 -->
                 <button @getuserinfo="onLogin" lang="zh_CN" open-type="getUserInfo">登 录</button>
             </div>
+            <!-- 如果登录，显示个人中心相关列表 -->
             <div v-else>
                 <ul class="person-list">
                     <a href="/pages/personInfo/main">
@@ -75,25 +86,37 @@ import login from '@/utils/login'
 export default {
     data () {
         return {
+            // 默认的用户信息只有默认的用户头像
             userInfo: {
                 avatarUrl: config.personUrl + '/avatar.png'
             },
+            // 支付系统验证码地址和cookies
             checkCodeUrl: '',
             cookie: '',
+            // 教务系统验证码地址和cookies
             jwCheckCodeUrl: '',
             jwCookie: '',
+            // 学号
             studyNumber: '',
+            // 支付系统密码
             password: '',
+            // 教务系统密码
             jwPassword: '',
+            // 教务系统验证码
             jwSerialNumber: '',
+            // 支付系统验证码
             serialNumber: '',
+            // 教务系统相关参数
             viewState: '',
             viewStateGenerator: '',
+            // 用于设置登录相关提示
             notice: '',
+            // 设置是否可以登录支付系统
             canUse: false
         }
     },
     methods: {
+        // 获取验证码图片和cookies。图片已经进行base64编码
         async getPicAndCookie () {
             if (this.canUse) {
                 const payData = await get('/weapp/get_check_code_cookie')
@@ -105,30 +128,36 @@ export default {
             const jwInfo = jwData.data
             this.jwCheckCodeUrl = 'data:image/png;base64,' + jwInfo.jwImg
             this.jwCookie = jwInfo.cookie
+            // 设置教务系统相关参数
             this.viewState = jwInfo.viewState
             this.viewStateGenerator = jwInfo.viewStateGenerator
         },
+        // 刷新支付系统验证码
         async getPic () {
             wx.showLoading({ title: '加载中' })
             const data = await get(`/weapp/get_check_code?cookies=${this.cookie}`)
             this.checkCodeUrl = 'data:image/png;base64,' + data.data.image
             wx.hideLoading()
         },
+        // 刷新教务系统验证码
         async getJwPic () {
             wx.showLoading({ title: '加载中' })
             const data = await get(`/weapp/jw_check_code?cookies=${this.jwCookie}`)
             this.jwCheckCodeUrl = 'data:image/png;base64,' + data.data
             wx.hideLoading()
         },
+        // 判断是否启用支付功能
         async canIuse () {
             try {
-                this.canUse = wx.getStorageSync('isOpen')
+                this.canUse = await wx.getStorageSync('isOpen')
             } catch (e) {
                 const isOpen = await get('/weapp/is_open')
                 this.canUse = isOpen.data
             }
         },
+        // 登录请求
         async onLogin () {
+            // 判断是否已经输入相关账号密码
             if (this.canUse) {
                 if (!this.password || this.password === '') {
                     wx.showToast({
@@ -177,10 +206,14 @@ export default {
                 return
             }
             wx.showLoading({ title: '登录中' })
+            // 设置登录地址
             login.setLoginUrl(config.loginUrl)
+            // 发起登录请求，由Wafer进行封装
             login.login({
                 success: async (userInfo) => {
+                    // 登录成功
                     wx.hideLoading()
+                    // 获取用户微信信息并保存在本地
                     this.userInfo = userInfo
                     wx.setStorageSync('userInfo', userInfo)
                     wx.showToast({
@@ -189,11 +222,14 @@ export default {
                         image: '/static/images/success.png',
                         mask: true
                     })
+                    // 获取用户课表信息并保存在本地
                     const classListData = await get(`/weapp/time_table?open_id=${userInfo.openId}&sno=${userInfo.sno}&sname=${userInfo.sname}`)
                     wx.setStorageSync('classList', classListData.data)
                 },
                 fail: (err) => {
+                    // 登录失败
                     wx.hideLoading()
+                    // 重新获取验证码图片
                     if (this.canUse) this.getPic()
                     this.getJwPic()
                     wx.showToast({
@@ -203,6 +239,7 @@ export default {
                         mask: true
                     })
                 },
+                // 向登录请求传入相关参数
                 studyNumber: this.studyNumber,
                 password: this.password,
                 serialNumber: this.serialNumber,
@@ -214,6 +251,7 @@ export default {
                 viewStateGenerator: this.viewStateGenerator
             })
         },
+        // 获取微信个人信息
         async getUserInfo () {
             let userInfo
             try {
@@ -231,6 +269,7 @@ export default {
                 }
             }
         },
+        // 获取页面输入框相关数据封装
         getStudyNumber (e) {
             this.studyNumber = e.mp.detail.value
         },
@@ -246,6 +285,7 @@ export default {
         getJwSerialNumber (e) {
             this.jwSerialNumber = e.mp.detail.value
         },
+        // 退出登录。清除微信个人信息并重载页面
         logOut () {
             try {
                 wx.clearStorageSync('userInfo')
@@ -257,12 +297,14 @@ export default {
     },
     async onShow () {
         wx.showLoading({ title: '加载中' })
+        // 判断是否可以登录支付系统并获取验证码图片
         await this.canIuse()
         await this.getUserInfo()
         if (!this.userInfo.openId) {
             await this.getPicAndCookie()
         }
         wx.hideLoading()
+        // 判断是否从其它页面传入登录请求
         this.notice = this.$root.$mp.query.notice
         if (this.notice) {
             wx.showToast({
@@ -277,9 +319,11 @@ export default {
 </script>
 
 <style scoped>
+/* 总定位 */
 #person-page {
     position: relative;
 }
+/* 顶部头像 */
 .avatar-content {
     position: relative;
     display: block;
@@ -296,6 +340,7 @@ export default {
     margin: 10rpx;
     border-radius: 100rpx;
 }
+/* 个人信息界面,设置定位和边框 */
 .person-content {
     position: relative;
     width: 80%;
@@ -309,6 +354,7 @@ export default {
     box-shadow: 0 0 40rpx 30rpx rgba(225, 225, 225, 0.2),
         0 20rpx 40rpx 0rpx rgba(0, 0, 0, 0.15);
 }
+/* 输入区域设置 */
 .input-area {
     height: 80rpx;
     width: 80%;
@@ -325,6 +371,7 @@ input {
     background-position: 10rpx center;
     border-bottom: 2rpx solid #ccc;
 }
+/* 各输入框前图标样式 */
 #study-number {
     background-image: url('../../../static/images/card.png');
 }
@@ -350,6 +397,7 @@ input {
     height: 70rpx;
     margin-right: 40rpx;
 }
+/* 登录按钮样式 */
 button {
     width: 70%;
     height: 80rpx;
@@ -363,6 +411,7 @@ button {
 button::after {
     border: none;
 }
+/* 登录后相关按钮布局 */
 .person-list {
     display: flex;
     flex-direction: column;
@@ -388,9 +437,11 @@ button::after {
     background: transparent;
     box-sizing: unset;
 }
+/* 设置列表间的分割线样式 */
 .person-list a:last-child {
     border-bottom: none;
 }
+/* 设置右边指向箭头 */
 .person-list a::after {
     content: '';
     float: right;

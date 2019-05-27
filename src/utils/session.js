@@ -1,3 +1,4 @@
+// Wafer登录相关，由系统默认生成
 var constants = require('./constants')
 var SESSION_KEY = 'weapp_session_' + constants.WX_SESSION_MAGIC_ID
 
