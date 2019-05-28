@@ -1,3 +1,4 @@
+// 主挂载组件
 <script>
 
 export default {
