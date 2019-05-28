@@ -45,55 +45,35 @@ yarn build:my
 
 ## 项目结构
 
-> 卷 System 的文件夹 PATH 列表
-> 卷序列号为 0F19-0AAA
-> C:.
-> ├─build
-> ├─config
-> ├─dist
-> │  └─wx
-> │      ├─common
-> │      ├─components
-> │      ├─pages
-> │      │  ├─about
-> │      │  ├─bath
-> │      │  ├─cardPayment
-> │      │  ├─elecPayment
-> │      │  ├─index
-> │      │  ├─netPayment
-> │      │  ├─openSource
-> │      │  ├─passing
-> │      │  ├─person
-> │      │  ├─personInfo
-> │      │  └─timeTable
-> │      └─static
-> │          └─images 
-> ├─node_modules
-> ├─server
-> │  ├─controllers
-> │  ├─middlewares
-> │  ├─node_modules
-> │  ├─public
-> │  │  ├─bath_images
-> │  │  ├─index_images
-> │  │  └─person_images
-> │  ├─routes
-> │  ├─tools
-> │  └─utils
-> ├─src
-> │  ├─components
-> │  ├─pages
-> │  │  ├─about
-> │  │  ├─bath
-> │  │  ├─cardPayment
-> │  │  ├─elecPayment
-> │  │  ├─index
-> │  │  ├─netPayment
-> │  │  ├─openSource
-> │  │  ├─passing
-> │  │  ├─person
-> │  │  ├─personInfo
-> │  │  └─timeTable
-> │  └─utils
-> └─static
->     └─images
+> ├─build  
+> ├─config  
+> ├─dist   
+> ├─node_modules  
+> ├─server  
+> │  ├─controllers  
+> │  ├─middlewares  
+> │  ├─node_modules  
+> │  ├─public  
+> │  │  ├─bath_images  
+> │  │  ├─index_images  
+> │  │  └─person_images  
+> │  ├─routes  
+> │  ├─tools  
+> │  └─utils  
+> ├─src  
+> │  ├─components  
+> │  ├─pages  
+> │  │  ├─about  
+> │  │  ├─bath  
+> │  │  ├─cardPayment  
+> │  │  ├─elecPayment  
+> │  │  ├─index  
+> │  │  ├─netPayment  
+> │  │  ├─openSource  
+> │  │  ├─passing  
+> │  │  ├─person  
+> │  │  ├─personInfo  
+> │  │  └─timeTable  
+> │  └─utils  
+> └─static  
+>  └─images
