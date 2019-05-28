@@ -1,37 +1,44 @@
-# ahu-pay
+# 小安生活帮·小程序
 
-> 安徽大学小程序项目
+这是微信小程序小安生活帮的源代码
 
-## Build Setup
+## 编译及运行
 
 ``` bash
-# 初始化项目
-vue init mpvue/mpvue-quickstart myproject
-cd myproject
-
 # 安装依赖
+npm install
+# 或
 yarn
 
 # 开发时构建
 npm dev
+# 或
+yarn dev
 
 # 打包构建
 npm build
+# 或
+yarn build
 
 # 指定平台的开发时构建(微信、百度、头条、支付宝)
 npm dev:wx
 npm dev:swan
 npm dev:tt
 npm dev:my
+# 或
+yarn dev:wx
+yarn dev:swan
+yarn dev:tt
+yarn dev:my
 
 # 指定平台的打包构建
 npm build:wx
 npm build:swan
 npm build:tt
 npm build:my
-
-# 生成 bundle 分析报告
-npm run build --report
+# 或
+yarn build:wx
+yarn build:swan
+yarn build:tt
+yarn build:my
 ```
-
-For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
