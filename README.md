@@ -1,80 +1,77 @@
-# 小安生活帮·小程序
+# Ahu Helper
+This registry of Ahu Helper Mini Program.
 
-这是微信小程序小安生活帮的源代码
-
-## 编译及运行
-
+## Install Dependencies
 ``` bash
-# 安装依赖
 npm install
-# 或
+# OR
 yarn
-
-# 开发时构建
+```
+## Develop
+``` bash
 npm dev
-# 或
+# OR
 yarn dev
 
-# 打包构建
-npm build
-# 或
-yarn build
-
-# 指定平台的开发时构建(微信、百度、头条、支付宝)
+# Develop for a specific platform (WeChat、Baidu、TikTok、Alipay)
 npm dev:wx
 npm dev:swan
 npm dev:tt
 npm dev:my
-# 或
+# OR
 yarn dev:wx
 yarn dev:swan
 yarn dev:tt
 yarn dev:my
+```
 
-# 指定平台的打包构建
+## Build
+``` bash
+npm build
+# OR
+yarn build
+
+# Build for a specific platform
 npm build:wx
 npm build:swan
 npm build:tt
 npm build:my
-# 或
+# OR
 yarn build:wx
 yarn build:swan
 yarn build:tt
 yarn build:my
 ```
 
-## 项目结构
+## Project Structure
 ```
-├─build  -------------------------------------  项目编译脚本相关文件  
-├─config  ------------------------------------  项目编译配置相关文件  
-├─dist  --------------------------------------  项目编译后的最终文件  
-├─node_modules  ------------------------------  项目依赖的模块  
-├─server  ------------------------------------  服务器端源代码  
-│ ├─controllers  -----------------------------  处理各路由的控制器  
-│ ├─middlewares  -----------------------------  服务器常用中间件  
-│ ├─node_modules  ----------------------------  服务器端项目依赖的模块  
-│ ├─public  ----------------------------------  服务器端静态资源文件，以图片为主  
-│ │ ├─bath_images  ---------------------------  浴室男女生图片  
-│ │ ├─index_images  --------------------------  首页图片  
-│ │ └─person_images  -------------------------  个人中心图片  
-│ ├─routes  ----------------------------------  服务器端路由配置  
-│ ├─tools  -----------------------------------  服务器初始化工具  
-│ └─utils  -----------------------------------  服务器端常用函数封装  
-├─src  ---------------------------------------  小程序端所有源码  
-│ ├─components  ------------------------------  小程序常用组件  
-│ ├─pages  -----------------------------------  小程序端各页面  
-│ │ ├─about  ---------------------------------  “关于小程序”页面  
-│ │ ├─bath  ----------------------------------  “浴室查询”页面  
-│ │ ├─cardPayment  ---------------------------  “卡片充值”页面  
-│ │ ├─elecPayment  ---------------------------  “电费充值”页面  
-│ │ ├─index  ---------------------------------  首页  
-│ │ ├─netPayment  ----------------------------  “网费充值”页面  
-│ │ ├─openSource  ----------------------------  “开源相关”页面  
-│ │ ├─passing  -------------------------------  “挂科率查询”页面  
-│ │ ├─person  --------------------------------  “个人中心”页面  
-│ │ ├─personInfo  ----------------------------  “个人信息”页面  
-│ │ └─timeTable  -----------------------------  “课程表”页面  
-│ └─utils  -----------------------------------  小程序端常用工具封装  
-└─static  ------------------------------------  小程序端静态资源文件，以图片为主  
+├─build  -------------------------------------  Build Scripts  
+├─config  ------------------------------------  Build Configuration
+├─server  ------------------------------------  Server Source Code
+│ ├─controllers  -----------------------------  Server Controllers 
+│ ├─middlewares  -----------------------------  Sever Middlewares 
+│ ├─public  ----------------------------------  Server Static Files
+│ │ ├─bath_images  ---------------------------  Images for /bath pages
+│ │ ├─index_images  --------------------------  Images for home pages  
+│ │ └─person_images  -------------------------  Images for /person pages
+│ ├─routes  ----------------------------------  Server Routes
+│ ├─tools  -----------------------------------  Server Initate Scripts
+│ └─utils  -----------------------------------  Server Utils Scripts
+├─src  ---------------------------------------  Client Source Code  
+│ ├─components  ------------------------------  Client Shared Components
+│ ├─pages  -----------------------------------  Client Pages
+│ │ ├─about  ---------------------------------  About Page
+│ │ ├─bath  ----------------------------------  Schedule of Bathroom Page
+│ │ ├─cardPayment  ---------------------------  Charge Student Card Page
+│ │ ├─elecPayment  ---------------------------  Recharge Electricity Page
+│ │ ├─index  ---------------------------------  Homepage
+│ │ ├─netPayment  ----------------------------  Recharge Network Fees Page
+│ │ ├─openSource  ----------------------------  Open Source Page
+│ │ ├─passing  -------------------------------  Examination Result Query Page
+│ │ ├─person  --------------------------------  Personal Page
+│ │ ├─personInfo  ----------------------------  Personal Info Page
+│ │ └─timeTable  -----------------------------  Class TimeTable Page
+│ └─utils  -----------------------------------  Client Shared Utils
+└─static  ------------------------------------  Client Static Images
  └─images
 ```
